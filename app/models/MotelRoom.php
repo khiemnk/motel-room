@@ -1,12 +1,14 @@
 <?php
 
-class Customer
+class MotelRoom
 {
-    private $cid;
-    private $fullname;
-    private $email;
-    private $password;
-    private $phone;
+    private $id;
+    private $name;
+    private $address;
+    private $desciption;
+    private $image;
+    private $contact;
+	private $price;
 
     public function __construct()
     {
@@ -14,52 +16,107 @@ class Customer
 
     public function getId()
     {
-        return $this->cid;
+        return $this->id;
     }
 
     public function setId($id)
     {
-        $this->cid = $id;
+        $this->id = $id;
     }
 
-    public function getFullName()
-    {
-        return $this->fullname;
-    }
+	/**
+	 * @return mixed
+	 */
+	public function getName() {
+		return $this->name;
+	}
+	
+	/**
+	 * @param mixed $name 
+	 * @return self
+	 */
+	public function setName($name): self {
+		$this->name = $name;
+		return $this;
+	}
 
-    public function setFullName($fullName)
-    {
-        $this->fullname = $fullName;
-    }
+	/**
+	 * @return mixed
+	 */
+	public function getAddress() {
+		return $this->address;
+	}
+	
+	/**
+	 * @param mixed $address 
+	 * @return self
+	 */
+	public function setAddress($address): self {
+		$this->address = $address;
+		return $this;
+	}
 
-    public function getEmail()
-    {
-        return $this->email;
-    }
+	/**
+	 * @return mixed
+	 */
+	public function getDesciption() {
+		return $this->desciption;
+	}
+	
+	/**
+	 * @param mixed $desciption 
+	 * @return self
+	 */
+	public function setDesciption($desciption): self {
+		$this->desciption = $desciption;
+		return $this;
+	}
 
-    public function setEmail($email)
-    {
-        $this->email = $email;
-    }
+	/**
+	 * @return mixed
+	 */
+	public function getImage() {
+		return $this->image;
+	}
+	
+	/**
+	 * @param mixed $image 
+	 * @return self
+	 */
+	public function setImage($image): self {
+		$this->image = $image;
+		return $this;
+	}
 
-    public function getPassword()
-    {
-        return $this->password;
-    }
+	/**
+	 * @return mixed
+	 */
+	public function getContact() {
+		return $this->contact;
+	}
+	
+	/**
+	 * @param mixed $contact 
+	 * @return self
+	 */
+	public function setContact($contact): self {
+		$this->contact = $contact;
+		return $this;
+	}
 
-    public function setPassword($password)
-    {
-        $hashed_password = password_hash($password, PASSWORD_BCRYPT);
-        $this->password = $hashed_password;
-    }
-
-    public function getPhone()
-    {
-        return $this->phone;
-    }
-
-    public function setPhone($phone)
-    {
-        $this->phone = $phone;
-    }
+	/**
+	 * @return mixed
+	 */
+	public function getPrice() {
+		return $this->price;
+	}
+	
+	/**
+	 * @param mixed $price 
+	 * @return self
+	 */
+	public function setPrice($price): self {
+		$this->price = $price;
+		return $this;
+	}
 }

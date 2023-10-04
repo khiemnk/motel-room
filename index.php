@@ -5,10 +5,18 @@ session_start();
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
+<meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="theme-color" content="#ffffff">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="shortcut icon" type="image/x-icon" href="assets/images/inner/favicon.png" />
+    <link rel="stylesheet" type="text/css" href="calenplugin/css/daterangepicker.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
+    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="assets/css/animate.css" />
+    <link href="assets/font-awesome/css/font-awesome.min.css" rel="stylesheet">
 
     <link rel="apple-touch-icon" sizes="180x180" href="image/favicon/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="image/favicon/favicon-32x32.png">
@@ -28,14 +36,17 @@ session_start();
     require 'app/Util.php';
     require 'app/dao/CustomerDAO.php';
     require 'app/dao/BookingDetailDAO.php';
+    require 'app/dao/MotelRoomDAO.php';
     require 'app/models/RequirementEnum.php';
     require 'app/models/Customer.php';
     require 'app/models/Booking.php';
+    require 'app/models/MotelRoom.php';
     require 'app/models/Reservation.php';
     require 'app/handlers/CustomerHandler.php';
     require 'app/handlers/BookingDetailHandler.php';
+    require 'app/handlers/MotelRoomHandler.php';
 
-    $username = $cHandler = $bdHandler = $cBookings = null;
+    $username = $cHandler = $bdHandler  = $cBookings = $motelRoomHandler = $motelRoomList = null;    
     $isSessionExists = false;
     $isAdmin = [];
     if (isset($_SESSION["username"])) {
@@ -48,6 +59,10 @@ session_start();
 
         $bdHandler = new BookingDetailHandler();
         $cBookings = $bdHandler->getCustomerBookings($cHandler);
+
+        $motelRoomHandler = new MotelRoomHandler();
+        $motelRoomList = $motelRoomHandler->getAllMotelRoom();
+
         $isSessionExists = true;
         $isAdmin = $_SESSION["authenticated"];
     }
@@ -74,7 +89,7 @@ session_start();
             <div class="row">
                 <div class="col-sm-8 col-md-7 py-4">
                     <h4 class="text-white">About</h4>
-                    <p class="text-muted">Add some information about hotel booking.</p>
+                    <p class="text-muted">Room information sharing service</p>
                 </div>
                 <div class="col-sm-4 offset-md-1 py-4 text-right">
                     <?php if ($isSessionExists) { ?>
@@ -83,7 +98,6 @@ session_start();
                         <?php if ($isAdmin[1] == "true" && isset($_COOKIE['is_admin']) && $_COOKIE['is_admin'] == "true") { ?>
                         <li><a href="admin.php" class="text-white">Manage customer reservation(s)<i class="far fa-address-book ml-2"></i></a></li>
                         <?php } else { ?>
-                        <li><a href="#" class="text-white my-reservations">View my bookings<i class="far fa-address-book ml-2"></i></a></li>
                         <li>
                             <a href="#" class="text-white" data-toggle="modal" data-target="#myProfileModal">Update profile<i class="fas fa-user ml-2"></i></a>
                         </li>
@@ -105,109 +119,180 @@ session_start();
         <div class="container d-flex justify-content-between">
             <a href="#" class="navbar-brand d-flex align-items-center">
                 <i class="fas fa-h-square mr-2"></i>
-                <strong>Hotel Booking</strong>
+                <strong>Motel Room Platform</strong>
             </a>
             <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
         </div>
     </div>
-    <div class="container my-3" id="my-reservations-div">
-        <h4>Reservations</h4>
-        <table id="myReservationsTbl" class="table table-striped table-bordered" cellspacing="0" width="100%">
-            <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th class="text-hide p-0" data-bookId="12">12</th>
-                <th scope="col">Start date</th>
-                <th scope="col">End date</th>
-                <th scope="col">Room type</th>
-                <th scope="col">Requirements</th>
-                <th scope="col">Adults</th>
-                <th scope="col">Children</th>
-                <th scope="col">Requests</th>
-                <th scope="col">Timestamp</th>
-                <th scope="col">Status</th>
-            </tr>
-            </thead>
-            <tbody>
-            <?php if (!empty($cBookings) && $bdHandler->getExecutionFeedback() == 1) { ?>
-                <?php   foreach ($cBookings as $k => $v) { ?>
-                    <tr>
-                        <th scope="row"><?php echo ($k + 1); ?></th>
-                        <td class="text-hide p-0"><?php echo $v["id"]; ?></td>
-                        <td><?php echo $v["start"]; ?></td>
-                        <td><?php echo $v["end"]; ?></td>
-                        <td><?php echo $v["type"]; ?></td>
-                        <td><?php echo $v["requirement"]; ?></td>
-                        <td><?php echo $v["adults"]; ?></td>
-                        <td><?php echo $v["children"]; ?></td>
-                        <td><?php echo $v["requests"]; ?></td>
-                        <td><?php echo $v["timestamp"]; ?></td>
-                        <td><?php echo $v["status"]; ?></td>
-                    </tr>
-                <?php } ?>
-            <?php } ?>
-            </tbody>
-        </table>
-    </div>
 </header>
-
 <main role="main">
 
     <section class="jumbotron text-center">
         <div class="container pt-lg-5 pl-5 px-5">
-            <h1 class="display-3">A brand new hotel beyond ordinary</h1>
-            <p class="lead text-muted">Book your summer holidays with us now.</p>
-            <p>
-                <?php if ($isSessionExists) { ?>
-                <a href="#" class="btn btn-success my-2" data-toggle="modal" data-target=".book-now-modal-lg">Book now<i class="fas fa-angle-double-right ml-1"></i></a>
-                <?php } else { ?>
-                <a href="#" class="btn btn-success my-2" data-toggle="modal" data-target=".sign-in-to-book-modal">Book now<i class="fas fa-angle-double-right ml-1"></i></a>
-                <?php } ?>
-            </p>
+            <h1 class="display-3">Welcome to our website</h1>
+            <p class="lead text-muted">Find your motel room with us now.</p>
         </div>
     </section>
 
-    <div class="container">
-        <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-            <h1 class="display-4">Pricing</h1>
-            <p class="lead">Quickly build an effective pricing table for your potential customers with this Bootstrap example. It's built with default Bootstrap components and utilities with little customization.</p>
-        </div>
-    </div>
-
-    <div class="album py-5 bg-light">
+    <!--section-->
+    <section>
         <div class="container">
             <div class="row">
-                <div class="col-md-4">
-                    <div class="card mb-4 box-shadow">
-                        <div class="card-header">
-                            <h5 class="my-0 font-weight-normal">Deluxe Room</h5>
-                        </div>
-                        <img class="card-img-top" data-src="holder.js/100px225?theme=thumb&amp;bg=55595c&amp;fg=eceeef&amp;text=Thumbnail" alt="Thumbnail [100%x225]" style="height: 225px; width: 100%; display: block;" src="image/tro1.jpg" data-holder-rendered="true">
-                        <div class="card-body">
-                            <p class="card-text">The ultimate sanctuary to recharge the senses, the beautifully-appointed 24sqm Deluxe Room exudes sheer sophistication and elegance. Located on the higher floors, each Deluxe Room is characterised by elevated ceilings and full length bay windows, transforming your living space into an atmospheric abode.</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="btn-group">
-                                    <?php if ($isSessionExists) { ?>
-                                    <button type="button" class="btn btn-sm btn-outline-success" data-rtype="Deluxe" data-toggle="modal" data-target=".book-now-modal-lg">
-                                        Book
-                                    </button>
-                                    <?php } else { ?>
-                                    <button type="button" class="btn btn-sm btn-outline-success" data-toggle="modal" data-target=".sign-in-to-book-modal">
-                                        Book
-                                    </button>
-                                    <?php } ?>
-                                </div>
-                                <small class="text-muted">3tr/tháng</small>
+                <!--left portion start-->
+                <div class="col-md-12 col-lg-3 col-xl-3 col-xs-12 mx-auto mt-3 ">
+                    <div class="filter-head text-left">
+                        <h6>4 of 4 Hotels</h6>
+                    </div>
+                    <div class="filter-area">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fa fa-search" aria-hidden="true"></i></span>
                             </div>
+                            <input type="text" class="form-control" placeholder="Filter by Hotel Name">
                         </div>
                     </div>
+                    <div class="filter-area">
+                        <h6>Price</h6>
+                        <ul>
+                            <li>
+                                <input type="checkbox">Below Rs 2,000(0)</li>
+                            <li>
+                                <input type="checkbox">Rs 2,000 - Rs 4,000(0)</li>
+                            <li>
+                                <input type="checkbox">Rs 4,000 - Rs 6,000(0)</li>
+                            <li>
+                                <input type="checkbox">Above Rs 4,000(1)</li>
+
+                        </ul>
+                    </div>
+                    <div class="filter-area">
+                        <h6>Star Rating</h6>
+                        <ul>
+                            <li>
+                                <input type="checkbox">5 Star(1)<span class="float-right">
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                    </span>
+                            </li>
+                            <li>
+                                <input type="checkbox">4 Star(2)<span class="float-right">
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                    </span></li>
+                            <li>
+                                <input type="checkbox">3 Star(3)<span class="float-right">
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                    </span></li>
+                            <li>
+                                <input type="checkbox">2 Star(0)
+                                <span class="float-right">
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                    </span></li>
+                            <li>
+                                <input type="checkbox">1 Star(1)
+                                <span class="float-right">
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                    </span>
+                            </li>
+
+                        </ul>
+                    </div>
                 </div>
-                
+
+                <!--left portion end-->
+                <!--right portion start-->
+                <div class="col-md-12 col-lg-9 col-xl-9 col-sm-12 mx-auto mt-3 hotel-listing">
+                    <!-- START: HOTEL LIST VIEW -->
+                    <div class="row">
+                        <div class="col wow zoomIn">
+                            <div class="hotel-list-view">
+                                <div class="row hotel-search-div">
+                                    <div class="col-lg-9 col-md-9 col-12">
+                                        <div class="input-group">
+                                            <i class="fa fa-map-marker" aria-hidden="true"></i><span>Search Address:</span>
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fa fa-search" aria-hidden="true"></i></span>
+                                            </div>
+                                            <input type="text" class="form-control" placeholder="Search for Location, Hotel Address in Bangalore, Karnataka">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-md-3 col-12 shortlist1">
+                                        <i class="fa fa-heart" aria-hidden="true"></i>
+                                        <span>You Shortlist(0)</span><i class="fa fa-long-arrow-right" aria-hidden="true"></i>
+                                    </div>
+                                </div>
+                                <?php if (!empty($motelRoomList) && $motelRoomHandler->getExecutionFeedback() == 1) { ?>
+                                <?php   for ($i = 0; $i < 5 && $i<sizeof($motelRoomList); $i++) { $c = $motelRoomList[$i] ?>
+                                <div class="row hotel-name">
+                                    <div class="col-md-12 col-lg-4 col-xl-4 col-sm-12">
+                                        <div class="banner1">
+                                            <div id="hambet-banner" class="carousel slide" data-ride="carousel" data-interval="9000">
+                                                <!-- Indicators -->
+                                                <ul class="carousel-indicators">
+                                                    <li data-target="#hambet-banner" data-slide-to="0" class="active"></li>
+                                                    <li data-target="#hambet-banner" data-slide-to="1"></li>
+                                                    <li data-target="#hambet-banner" data-slide-to="2"></li>
+                                                </ul>
+                                                <!-- The slideshow -->
+                                                <div class="carousel-inner">
+                                                    <div class="carousel-item active">
+                                                        <img src=<?php echo $c["image"]?> alt="Single Room" />
+                                                    </div>
+                                                    <div class="carousel-item">
+                                                        <img src=<?php echo $c["image"]?> alt="Single Room" />
+                                                    </div>
+                                                    <div class="carousel-item">
+                                                        <img src=<?php echo $c["image"]?> alt="Single Room" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 col-lg-5 col-xl-5 col-sm-12  tourDiv">
+                                        <h4><?php echo $c["name"]?></h4>
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                        <h5><?php echo $c["price"]?>đ</h5>
+                                        <span><?php echo $c["address"]?></span>
+                                    </div>
+                                    <div class="col-md-12 col-lg-3 col-xl-3 col-sm-12 ratingDiv">
+                                        <a href="">
+                                            Expert Rating
+                                        </a>
+                                        <span class="rate"><?php echo $c["rating"]?></span>
+                                        <h6 class="perday">
+                                            <i class="fa fa-check" aria-hidden="true"></i>Free Cancellation Eligible</h6>
+                                        <div class="bttn">
+                                            <a href="select-room.html">View Details</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <?php } ?>
+                                <?php } ?>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div class="clearfix"></div>
+                    <!-- END: CRUISE LIST VIEW -->
+                </div>
             </div>
         </div>
-    </div>
+    </section>
+    <!--end Section1-->
 
     <?php if(isset($_COOKIE['is_admin']) && $_COOKIE['is_admin'] == "false") : ?>
     <div class="modal fade book-now-modal-lg" tabindex="-1" role="dialog" aria-labelledby="bookNowModalLarge" aria-hidden="true">
@@ -240,21 +325,6 @@ session_start();
                                             </div>
                                             <input type="date" class="form-control"
                                                    name="startDate"  min="<?php echo Util::dateToday('0'); ?>" required>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="endDate" class="col-sm-3 col-form-label">Check-out
-                                        <span class="red-asterisk"> *</span>
-                                    </label>
-                                    <div class="col-sm-9">
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text" id="inputGroupPrepend">
-                                                    <i class="fa fa-calendar"></i>
-                                                </span>
-                                            </div>
-                                            <input type="date" class="form-control"  min="<?php echo Util::dateToday('1'); ?>" name="endDate" required>
                                         </div>
                                     </div>
                                 </div>
@@ -443,7 +513,7 @@ session_start();
 </main>
 
 <footer class="container">
-    <p>&copy; Company 2017-2018</p>
+    <p>&copy; Good luck</p>
 </footer>
 <script src="js/utilityFunctions.js"></script>
 <script src="node_modules/jquery/dist/jquery.min.js"></script>

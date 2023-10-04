@@ -2,7 +2,11 @@
 
 class MotelRoomHandler extends MotelRoomDAO
 {
-    private $executionFeedback;
+    public function __construct()
+    {
+    }
+
+    private $executionFeedback = 1;
 
     public function getExecutionFeedback()
     {

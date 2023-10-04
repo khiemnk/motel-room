@@ -68,3 +68,8 @@ textarea#specialRequests {
 input.invalid, select.invalid {
     background-color: #ffdddd;
 }
+
+.tourDiv i {
+    padding-bottom: 20px;
+    color: #EF8822;
+}
