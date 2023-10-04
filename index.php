@@ -184,7 +184,7 @@ session_start();
                         <div class="card-header">
                             <h5 class="my-0 font-weight-normal">Deluxe Room</h5>
                         </div>
-                        <img class="card-img-top" data-src="holder.js/100px225?theme=thumb&amp;bg=55595c&amp;fg=eceeef&amp;text=Thumbnail" alt="Thumbnail [100%x225]" style="height: 225px; width: 100%; display: block;" src="image/deluxe.jpg" data-holder-rendered="true">
+                        <img class="card-img-top" data-src="holder.js/100px225?theme=thumb&amp;bg=55595c&amp;fg=eceeef&amp;text=Thumbnail" alt="Thumbnail [100%x225]" style="height: 225px; width: 100%; display: block;" src="image/tro1.jpg" data-holder-rendered="true">
                         <div class="card-body">
                             <p class="card-text">The ultimate sanctuary to recharge the senses, the beautifully-appointed 24sqm Deluxe Room exudes sheer sophistication and elegance. Located on the higher floors, each Deluxe Room is characterised by elevated ceilings and full length bay windows, transforming your living space into an atmospheric abode.</p>
                             <div class="d-flex justify-content-between align-items-center">
@@ -199,57 +199,12 @@ session_start();
                                     </button>
                                     <?php } ?>
                                 </div>
-                                <small class="text-muted">$250 / night</small>
+                                <small class="text-muted">3tr/tháng</small>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="card mb-4 box-shadow">
-                        <div class="card-header">
-                            <h5 class="my-0 font-weight-normal">Double Room</h5>
-                        </div>
-                        <img class="card-img-top" data-src="holder.js/100px225?theme=thumb&amp;bg=55595c&amp;fg=eceeef&amp;text=Thumbnail" alt="Thumbnail [100%x225]" src="image/double.jpg" data-holder-rendered="true" style="height: 225px; width: 100%; display: block;">
-                        <div class="card-body">
-                            <p class="card-text">The standard twin room is equipped with two single beds to house two people. An enticing set of top notch facilities to the optimum security level, a fully air conditioned twin room remains the perfect choice for your needs. Book hotel rooms with us and enjoy your trip with full fervor.</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <?php if ($isSessionExists) { ?>
-                                <button type="button" class="btn btn-sm btn-outline-success" data-rtype="Double" data-toggle="modal" data-target=".book-now-modal-lg">
-                                    Book
-                                </button>
-                                <?php } else { ?>
-                                <button type="button" class="btn btn-sm btn-outline-success" data-toggle="modal" data-target=".sign-in-to-book-modal">
-                                    Book
-                                </button>
-                                <?php } ?>
-                                <small class="text-muted">$180 / night</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card mb-4 box-shadow">
-                        <div class="card-header">
-                            <h5 class="my-0 font-weight-normal">Single Room</h5>
-                        </div>
-                        <img class="card-img-top" data-src="holder.js/100px225?theme=thumb&amp;bg=55595c&amp;fg=eceeef&amp;text=Thumbnail" alt="Thumbnail [100%x225]" src="image/single.jpg" data-holder-rendered="true" style="height: 225px; width: 100%; display: block;">
-                        <div class="card-body">
-                            <p class="card-text">A modestly sized single room with en suite bathroom with shower and/or bathtub, a hairdryer and complimentary toiletries. Amenities include free WiFi, a telephone, a minibar, and a flat-screen TV with a variety of channels and films.</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <?php if ($isSessionExists) { ?>
-                                <button type="button" class="btn btn-sm btn-outline-success" data-toggle="modal" data-rtype="Single" data-target=".book-now-modal-lg">
-                                    Book
-                                </button>
-                                <?php } else { ?>
-                                <button type="button" class="btn btn-sm btn-outline-success" data-toggle="modal" data-target=".sign-in-to-book-modal">
-                                    Book
-                                </button>
-                                <?php } ?>
-                                <small class="text-muted">$130 / night</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                
             </div>
         </div>
     </div>
