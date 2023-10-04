@@ -9,6 +9,7 @@ class MotelRoomDAO
     protected function getAll()
     {
         $sql = 'SELECT 
+        r.id,
         r.name,
         r.address,
         r.description,

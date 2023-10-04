@@ -46,7 +46,8 @@ session_start();
     require 'app/handlers/BookingDetailHandler.php';
     require 'app/handlers/MotelRoomHandler.php';
 
-    $username = $cHandler = $bdHandler  = $cBookings = $motelRoomHandler = $motelRoomList = null;    
+    $username = $cHandler = $bdHandler  = $cBookings = $motelRoomHandler = $motelRoomList = null;   
+    $index = 0; 
     $isSessionExists = false;
     $isAdmin = [];
     if (isset($_SESSION["username"])) {
@@ -276,7 +277,7 @@ session_start();
                                         <h6 class="perday">
                                             <i class="fa fa-check" aria-hidden="true"></i>Free Cancellation Eligible</h6>
                                         <div class="bttn">
-                                            <a href="select-room.html">View Details</a>
+                                            <a href="DetailMotelRoom.php?id=<?php echo $c["id"]?>">View Details</a>
                                         </div>
                                     </div>
                                 </div>
