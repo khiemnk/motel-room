@@ -46,8 +46,7 @@ session_start();
     require 'app/handlers/BookingDetailHandler.php';
     require 'app/handlers/MotelRoomHandler.php';
 
-    $username = $cHandler = $bdHandler  = $cBookings = $motelRoomHandler = $motelRoomList = null;   
-    $index = 0; 
+    $username = $cHandler = $bdHandler  = $cBookings = $motelRoomHandler = $motelRoomList = null;
     $isSessionExists = false;
     $isAdmin = [];
     if (isset($_SESSION["username"])) {
@@ -144,15 +143,17 @@ session_start();
                 <!--left portion start-->
                 <div class="col-md-12 col-lg-3 col-xl-3 col-xs-12 mx-auto mt-3 ">
                     <div class="filter-head text-left">
-                        <h6>4 of 4 Hotels</h6>
+                        <h6>4 of 4 Room</h6>
                     </div>
                     <div class="filter-area">
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text"><i class="fa fa-search" aria-hidden="true"></i></span>
+                        <form action="#">
+                            <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <button class="input-group-text" type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
+                                    </div>
+                                    <input type="text" class="form-control" placeholder="Filter by Name">
                             </div>
-                            <input type="text" class="form-control" placeholder="Filter by Hotel Name">
-                        </div>
+                        </form>
                     </div>
                     <div class="filter-area">
                         <h6>Price</h6>
@@ -219,13 +220,15 @@ session_start();
                             <div class="hotel-list-view">
                                 <div class="row hotel-search-div">
                                     <div class="col-lg-9 col-md-9 col-12">
+                                    <form action="#">
                                         <div class="input-group">
                                             <i class="fa fa-map-marker" aria-hidden="true"></i><span>Search Address:</span>
                                             <div class="input-group-prepend">
-                                                <span class="input-group-text"><i class="fa fa-search" aria-hidden="true"></i></span>
+                                                <button class="input-group-text"><i class="fa fa-search" aria-hidden="true"></i></button>
                                             </div>
-                                            <input type="text" class="form-control" placeholder="Search for Location, Hotel Address in Bangalore, Karnataka">
+                                            <input type="text" class="form-control" placeholder="Search for Location">
                                         </div>
+                                    </form>
                                     </div>
                                     <div class="col-lg-3 col-md-3 col-12 shortlist1">
                                         <i class="fa fa-heart" aria-hidden="true"></i>

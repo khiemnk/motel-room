@@ -23,6 +23,24 @@ class MotelRoomDAO
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    protected function getById(int $id)
+    {
+        $sql = 'SELECT 
+        r.id,
+        r.name,
+        r.address,
+        r.description,
+        r.image,
+        r.contact,
+        r.price,
+        r.rating
+        FROM `motel_room` as r
+        where r.id = ?;';
+        $stmt = DB::getInstance()->prepare($sql);
+        $stmt->execute([$id]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     protected function fetchMotelRoomWithName($name)
     {
         $sql = 'SELECT

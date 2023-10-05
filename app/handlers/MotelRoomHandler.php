@@ -36,4 +36,13 @@ class MotelRoomHandler extends MotelRoomDAO
         return $this->setExecutionFeedback(0);
     }
 
+    public function getMotelRoomById(int $id)
+    {
+        if ($this->getById($id)) {
+            $this->setExecutionFeedback(1);
+            return $this->getById($id);
+        }
+        return $this->setExecutionFeedback(0);
+    }
+
 }

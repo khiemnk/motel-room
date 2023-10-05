@@ -13,7 +13,29 @@
     <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="assets/css/animate.css" />
     <link href="assets/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-    <?php ?>
+    <?php 
+    require 'lib/phpPasswordHashing/passwordLib.php';
+    require 'app/DB.php';
+    require 'app/Util.php';
+    require 'app/dao/CustomerDAO.php';
+    require 'app/dao/BookingDetailDAO.php';
+    require 'app/dao/MotelRoomDAO.php';
+    require 'app/models/RequirementEnum.php';
+    require 'app/models/Customer.php';
+    require 'app/models/Booking.php';
+    require 'app/models/MotelRoom.php';
+    require 'app/models/Reservation.php';
+    require 'app/handlers/CustomerHandler.php';
+    require 'app/handlers/BookingDetailHandler.php';
+    require 'app/handlers/MotelRoomHandler.php';
+
+    $motelRoom = $motelRoomHandler = $motelRoomList = null;
+    $id = $_GET['id'];
+    $motelRoomHandler = new MotelRoomHandler();
+    $motelRoomList = $motelRoomHandler->getMotelRoomById($id);
+    $motelRoom = $motelRoomList[0];
+
+    ?>
 </head>
 <body>
     <!--start Header-->
@@ -40,8 +62,8 @@
             <div class="container">
                 <div class="row hotelDiv">
                     <div class="col-lg-6 col-md-6 col-6 col-12">
-                        <h2>The Chancery Pavilion</h2>
-                        <span>Residency Road, Bangalore</span>
+                        <h2><?php echo $motelRoom["name"]?></h2>
+                        <span><?php echo $motelRoom["address"]?></span>
                         <div class="row">
                             <div class="col-lg-3 col-md-3 col-xl-3 col-12 fivestar">
                                 <div>
@@ -60,7 +82,7 @@
                         </div>
                     </div>
                     <div class="col-lg-6 col-md-6 col-6 col-12 shortlist text-right">
-                        <span class="short-bold">₹ 6,40,640</span>
+                        <span class="short-bold"><?php echo $motelRoom["price"]?>đ</span>
                         <span class="short-btn"><i class="fa fa-heart-o" aria-hidden="true"></i> Shortlist</span>
                     </div>
                 </div>
@@ -88,8 +110,8 @@
                     <div class="col-lg-4 col-md-4 col-4 col-12">
                         <h3>Sumary</h3>
                         <ul>
-                            <li>Try the Vineyard Sunday Brunch by the pool-side with live counters</li>
-                            <li>Entire floor dedicate to women travellers with unique amenities</li>
+                            <li><?php echo $motelRoom["description"]?></li>
+                            <!-- <li>Entire floor dedicate to women travellers with unique amenities</li> -->
                         </ul>
                     </div>
                     <div class="col-lg-4 col-md-4 col-4 col-12 direction">
