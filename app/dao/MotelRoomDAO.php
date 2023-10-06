@@ -41,18 +41,21 @@ class MotelRoomDAO
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    protected function fetchMotelRoomWithName($name)
+    protected function fetchMotelRoomWithName(string $name)
     {
-        $sql = 'SELECT
+        $sql = "SELECT
+        r.id,
         r.name,
         r.address,
         r.description,
         r.image,
-        r.contact
+        r.contact,
+        r.price,
+        r.rating
         FROM motel_room AS r
-        WHERE r.name = ?;';
+        WHERE r.name like '%$name%'";
         $stmt = DB::getInstance()->prepare($sql);
-        $stmt->execute([$name]);
+        $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

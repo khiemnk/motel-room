@@ -27,11 +27,11 @@ class MotelRoomHandler extends MotelRoomDAO
         }
     }
 
-    public function getMotelRoomByName(MotelRoom $motelRoom)
+    public function getMotelRoomByName(string $name)
     {
-        if ($this->fetchMotelRoomWithName($motelRoom->getId())) {
+        if ($this->fetchMotelRoomWithName($name)) {
             $this->setExecutionFeedback(1);
-            return $this->fetchMotelRoomWithName($motelRoom->getId());
+            return $this->fetchMotelRoomWithName($name);
         }
         return $this->setExecutionFeedback(0);
     }

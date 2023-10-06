@@ -12,8 +12,10 @@
     <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
     <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="assets/css/animate.css" />
+    <!-- <link rel="stylesheet" href="css/main.css"> -->
     <link href="assets/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-    <?php 
+
+    <?php
     require 'lib/phpPasswordHashing/passwordLib.php';
     require 'app/DB.php';
     require 'app/Util.php';
@@ -96,6 +98,7 @@
                     </div>
                 </div>
             </div>
+
             <div class="container">
                 <div class="row hotel-banner">
                     <div class="col-12 ">

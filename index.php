@@ -62,6 +62,10 @@ session_start();
 
         $motelRoomHandler = new MotelRoomHandler();
         $motelRoomList = $motelRoomHandler->getAllMotelRoom();
+        if(isset($_POST["nameValueFilter"])) {
+            $name = $_POST["nameValueFilter"];
+            $motelRoomList = $motelRoomHandler->getMotelRoomByName($name);
+        }
 
         $isSessionExists = true;
         $isAdmin = $_SESSION["authenticated"];
@@ -146,12 +150,12 @@ session_start();
                         <h6>4 of 4 Room</h6>
                     </div>
                     <div class="filter-area">
-                        <form action="#">
+                        <form action="index.php" method="post">
                             <div class="input-group">
                                     <div class="input-group-prepend">
                                         <button class="input-group-text" type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
                                     </div>
-                                    <input type="text" class="form-control" placeholder="Filter by Name">
+                                    <input name="nameValueFilter" type="text" class="form-control" placeholder="Filter by Name">
                             </div>
                         </form>
                     </div>
@@ -288,7 +292,7 @@ session_start();
                                 <?php } ?>
                             </div>
                         </div>
-                        
+
                     </div>
                     <div class="clearfix"></div>
                     <!-- END: CRUISE LIST VIEW -->
