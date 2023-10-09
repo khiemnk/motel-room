@@ -5,10 +5,12 @@ class MotelRoom
     private $id;
     private $name;
     private $address;
-    private $desciption;
+    private $description;
     private $image;
     private $contact;
 	private $price;
+    private $summary;
+    private $rating;
 
     public function __construct()
     {
@@ -30,9 +32,9 @@ class MotelRoom
 	public function getName() {
 		return $this->name;
 	}
-	
+
 	/**
-	 * @param mixed $name 
+	 * @param mixed $name
 	 * @return self
 	 */
 	public function setName($name): self {
@@ -46,9 +48,9 @@ class MotelRoom
 	public function getAddress() {
 		return $this->address;
 	}
-	
+
 	/**
-	 * @param mixed $address 
+	 * @param mixed $address
 	 * @return self
 	 */
 	public function setAddress($address): self {
@@ -59,16 +61,16 @@ class MotelRoom
 	/**
 	 * @return mixed
 	 */
-	public function getDesciption() {
-		return $this->desciption;
+	public function getDescription() {
+		return $this->description;
 	}
-	
+
 	/**
-	 * @param mixed $desciption 
+	 * @param mixed $desciption
 	 * @return self
 	 */
-	public function setDesciption($desciption): self {
-		$this->desciption = $desciption;
+	public function setDesciption($description): self {
+		$this->description = $description;
 		return $this;
 	}
 
@@ -78,9 +80,9 @@ class MotelRoom
 	public function getImage() {
 		return $this->image;
 	}
-	
+
 	/**
-	 * @param mixed $image 
+	 * @param mixed $image
 	 * @return self
 	 */
 	public function setImage($image): self {
@@ -94,9 +96,9 @@ class MotelRoom
 	public function getContact() {
 		return $this->contact;
 	}
-	
+
 	/**
-	 * @param mixed $contact 
+	 * @param mixed $contact
 	 * @return self
 	 */
 	public function setContact($contact): self {
@@ -110,13 +112,32 @@ class MotelRoom
 	public function getPrice() {
 		return $this->price;
 	}
-	
+
 	/**
-	 * @param mixed $price 
+	 * @param mixed $price
 	 * @return self
 	 */
 	public function setPrice($price): self {
 		$this->price = $price;
 		return $this;
 	}
+
+    public function getSummary() {
+        return $this->summary;
+    }
+
+    public function setSummary($summary): self {
+        $this->summary = $summary;
+        return $this;
+    }
+
+    public function getRating()
+    {
+        return $this->rating;
+    }
+
+    public function setRating($rating)
+    {
+        $this->rating = $rating;
+    }
 }

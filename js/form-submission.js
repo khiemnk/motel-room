@@ -3,7 +3,8 @@ const formIds = {
   login: '#login-form',
   logout: '#sign-out-link',
   reservation: '#reservation-form',
-  updateProfile: '#update-profile-form'
+  updateProfile: '#update-profile-form',
+  createMotelRoom: '#create-motel-room'
 };
 
 const formData = {
@@ -45,6 +46,16 @@ const formData = {
       email: $("input[name='updateEmail']").val(),
       newPassword: $("input[name='updatePassword']").val(),
       submitBtn: $('input[name="updateProfileSubmitBtn"]').val()
+    };
+  },
+  createMotelRoom: function () {
+    return {
+      name: $('input[name="nameMotelRoom"]').val(),
+      address: $("input[name='addressMotelRoom']").val(),
+      summary: $("input[name='summaryMotelRoom']").val(),
+      description: $("input[name='descriptionMotelRoom']").val(),
+      contact: $("input[name='contactMotelRoom']").val(),
+      price: $('input[name="priceProfileSubmitBtn"]').val()
     };
   }
 };

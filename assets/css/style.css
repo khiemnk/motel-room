@@ -1,6 +1,6 @@
 
 @font-face {
-  font-family: 'Montserrat'; 
+  font-family: 'Montserrat';
   font-style: normal;
   font-weight: 400;
   font-display: swap;
@@ -9,7 +9,7 @@
 }
 
 @font-face {
-  font-family: 'Roboto'; 
+  font-family: 'Roboto';
   font-style: normal;
   font-weight: 400;
   font-display: swap;
@@ -21,7 +21,7 @@ body {
   padding: 0px;
   margin: 0px;
 }
- 
+
 p {
   font-family: Roboto, sans-serif;
 }.round {
@@ -116,7 +116,7 @@ html {
   width: 20px;
 }
 
-.curr-img { 
+.curr-img {
   width:9px;
 }
 
@@ -524,7 +524,7 @@ label {
 }
 
 .listDiv:hover{
-  color:#fff; 
+  color:#fff;
 }
 .listInner {
   margin-top: 20px;
@@ -1673,8 +1673,8 @@ text-align: center;
       margin-bottom: 16px;
       display: none;
     }
-    
-    .wayDiv label{ 
+
+    .wayDiv label{
       margin-right: 25px;
       padding-right: 10px;
     }
@@ -1750,14 +1750,14 @@ text-align: center;
       color: #fff;
       margin-bottom: 20px;
     }
-  
+
     .bookingDiv{
     margin-top: 20px!important;
     }
     .emailDivSec{
       padding-top: 20px;
     }
-    
+
     .hiddenDiv-flight{
       padding-top: 20px;
     }
@@ -2020,9 +2020,9 @@ text-align: center;
     font-weight: 700;
    }
    .dealDivOne p{
-    font-size:14px!important; 
+    font-size:14px!important;
    }
-@media (max-width:575px) {  
+@media (max-width:575px) {
     .display-4 {
         font-size: 0.6rem;
     }
@@ -2041,7 +2041,7 @@ text-align: center;
         height: 14.2857vw;
     }
 }
-     
+
 @media only screen and (max-width: 576px) {
   #section-one {
     height: auto;
@@ -2078,7 +2078,7 @@ text-align: center;
     }
     .passenger {
   position: relative;
- 
+
 }
 .secure {
   position: relative;
@@ -2228,7 +2228,7 @@ text-align: center;
   border-radius:6px;
 }
 .card{
-   margin-bottom: 10px; 
+   margin-bottom: 10px;
    }
 }
 
@@ -2307,7 +2307,7 @@ text-align: center;
   border-radius:6px;
 }
 .card{
-   margin-bottom: 10px; 
+   margin-bottom: 10px;
    }
 }
 

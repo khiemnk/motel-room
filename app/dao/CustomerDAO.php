@@ -25,10 +25,15 @@ class CustomerDAO
 
     protected function getAll()
     {
-        $sql = 'SELECT * FROM `customer`';
+        $sql = "SELECT
+        c.cid,
+        c.fullname,
+        c.phone,
+        c.email
+        FROM `customer` c";
         $stmt = DB::getInstance()->prepare($sql);
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_CLASS, "Customer");
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     protected function insert(Customer $customer)
@@ -56,7 +61,7 @@ class CustomerDAO
             'phone'     => $customer->getPhone(),
             'cid'       => $customer->getId()
         ]);
-        return $exec;    
+        return $exec;
     }
 
     protected function delete(Customer $customer)

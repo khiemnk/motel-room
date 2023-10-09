@@ -14,7 +14,7 @@ session_start();
     <link rel="shortcut icon" type="image/x-icon" href="assets/images/inner/favicon.png" />
     <link rel="stylesheet" type="text/css" href="calenplugin/css/daterangepicker.css">
     <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
-    <!-- <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css" /> -->
+<!--     <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css" />-->
     <link rel="stylesheet" type="text/css" href="assets/css/animate.css" />
     <link href="assets/font-awesome/css/font-awesome.min.css" rel="stylesheet">
 
@@ -28,6 +28,24 @@ session_start();
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/select/1.2.5/css/select.dataTables.min.css">
     <link rel="stylesheet" href="css/main.css">
+
+    <style>
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+    </style>
 
     <?php
 
@@ -46,25 +64,58 @@ session_start();
     require 'app/handlers/BookingDetailHandler.php';
     require 'app/handlers/MotelRoomHandler.php';
 
-    $username = $cHandler = $bdHandler  = $cBookings = $motelRoomHandler = $motelRoomList = null;
+    $username = $cHandler = $bdHandler  = $cBookings = $motelRoomHandler = $motelRoomList = $customerHandler = $customerList = null;
     $isSessionExists = false;
     $isAdmin = [];
     if (isset($_SESSION["username"])) {
         $username = $_SESSION["username"];
 
         $cHandler = new CustomerHandler();
+
         $cHandler = $cHandler->getCustomerObj($_SESSION["accountEmail"]);
         $cAdmin = new Customer();
         $cAdmin->setEmail($cHandler->getEmail());
 
         $bdHandler = new BookingDetailHandler();
         $cBookings = $bdHandler->getCustomerBookings($cHandler);
-
         $motelRoomHandler = new MotelRoomHandler();
+
+        // Create motel room
+        if(isset($_POST["nameMotelRoom"]) || isset($_POST["addressMotelRoom"]) || isset($_POST["summaryMotelRoom"]) ||
+            isset($_POST["descriptionMotelRoom"]) || isset($_POST["priceMotelRoom"]) || isset($_POST["contactMotelRoom"])){
+            $id = $_POST["motelRoomId"];
+            $name = $_POST["nameMotelRoom"];
+            $address = $_POST["addressMotelRoom"];
+            $summary = $_POST["summaryMotelRoom"];
+            $description = $_POST["descriptionMotelRoom"];
+            $price = $_POST["priceMotelRoom"];
+            $contact = $_POST["contactMotelRoom"];
+            $motelRoom = new MotelRoom();
+            $motelRoom->setId($id);
+            $motelRoom->setName($name);
+            $motelRoom->setAddress($address);
+            $motelRoom->setSummary($summary);
+            $motelRoom->setDesciption($description);
+            $motelRoom->setContact($contact);
+            $motelRoom->setPrice($price);
+            $motelRoom->setImage("image/tro1.jpg");
+            $motelRoom->setRating("10");
+            if ($id != null){
+                $motelRoomHandler->updateMotelRoom($motelRoom);
+            }
+            else{
+                $motelRoomHandler->addMotelRoom($motelRoom);
+            }
+        }
+
         $motelRoomList = $motelRoomHandler->getAllMotelRoom();
-        if(isset($_POST["nameValueFilter"])) {
+
+        $customerHandler = new CustomerHandler();
+        $customerList = $customerHandler->getAllCustomer();
+        if(isset($_POST["nameValueFilter"]) || isset($_POST["locationValueFilter"])) {
             $name = $_POST["nameValueFilter"];
-            $motelRoomList = $motelRoomHandler->getMotelRoomByName($name);
+            $location = $_POST["locationValueFilter"];
+            $motelRoomList = $motelRoomHandler->getMotelRoomByName($name, $location);
         }
 
         $isSessionExists = true;
@@ -85,6 +136,9 @@ session_start();
     <title>Home</title>
     <?php //echo '<title>Home isAdmin=' . $isAdmin . ' $isSessionExists=' . $isSessionExists . '</title>'?>
 </head>
+<script>
+
+</script>
 <body>
 
 <header>
@@ -107,6 +161,7 @@ session_start();
                         </li>
                         <?php } ?>
                         <li><a href="#" id="sign-out-link" class="text-white">Sign out<i class="fas fa-sign-out-alt ml-2"></i></a></li>
+                        <li><a href="#" data-toggle="modal" data-target=".customer-list" id="sign-out-link" class="text-white">Customer List<i class="fas fa-sign-out-alt ml-2"></i></a></li>
                     </ul>
                     <?php } else { ?>
                     <h4>
@@ -139,7 +194,7 @@ session_start();
             <p class="lead text-muted">Find your motel room with us now.</p>
         </div>
     </section>
-
+    <form action="index.php" id="filterMotelRoom" method="post">
     <!--section-->
     <section>
         <div class="container">
@@ -150,34 +205,35 @@ session_start();
                         <h6>4 of 4 Room</h6>
                     </div>
                     <div class="filter-area">
-                        <form action="index.php" method="post">
+
                             <div class="input-group">
                                     <div class="input-group-prepend">
                                         <button class="input-group-text" type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
                                     </div>
-                                    <input name="nameValueFilter" type="text" class="form-control" placeholder="Filter by Name">
+                                    <input name="nameValueFilter" type="text" class="form-control" placeholder="Filter by Name" value="">
                             </div>
-                        </form>
                     </div>
                     <div class="filter-area">
                         <h6>Price</h6>
                         <ul>
                             <li>
-                                <input type="checkbox">Below Rs 2,000(0)</li>
+                                <input type="checkbox">< 1 triệu</li>
                             <li>
-                                <input type="checkbox">Rs 2,000 - Rs 4,000(0)</li>
+                                <input type="checkbox">1 triệu - 2 triệu</li>
                             <li>
-                                <input type="checkbox">Rs 4,000 - Rs 6,000(0)</li>
+                                <input type="checkbox">2 triệu - 3 triệu</li>
                             <li>
-                                <input type="checkbox">Above Rs 4,000(1)</li>
+                                <input type="checkbox">3 triệu - 4 triệu</li>
+                            <li>
+                                <input type="checkbox">> 4 triệu</li>
 
                         </ul>
                     </div>
                     <div class="filter-area">
-                        <h6>Star Rating</h6>
+                        <h6>Rating</h6>
                         <ul>
                             <li>
-                                <input type="checkbox">5 Star(1)<span class="float-right">
+                                <input type="checkbox">8-10 point<span class="float-right">
                                         <i class="fa fa-star" aria-hidden="true"></i>
                                         <i class="fa fa-star" aria-hidden="true"></i>
                                         <i class="fa fa-star" aria-hidden="true"></i>
@@ -186,26 +242,26 @@ session_start();
                                     </span>
                             </li>
                             <li>
-                                <input type="checkbox">4 Star(2)<span class="float-right">
+                                <input type="checkbox">6-8 point<span class="float-right">
                                         <i class="fa fa-star" aria-hidden="true"></i>
                                         <i class="fa fa-star" aria-hidden="true"></i>
                                         <i class="fa fa-star" aria-hidden="true"></i>
                                         <i class="fa fa-star" aria-hidden="true"></i>
                                     </span></li>
                             <li>
-                                <input type="checkbox">3 Star(3)<span class="float-right">
+                                <input type="checkbox">4-6 point<span class="float-right">
                                         <i class="fa fa-star" aria-hidden="true"></i>
                                         <i class="fa fa-star" aria-hidden="true"></i>
                                         <i class="fa fa-star" aria-hidden="true"></i>
                                     </span></li>
                             <li>
-                                <input type="checkbox">2 Star(0)
+                                <input type="checkbox">2-4 point
                                 <span class="float-right">
                                         <i class="fa fa-star" aria-hidden="true"></i>
                                         <i class="fa fa-star" aria-hidden="true"></i>
                                     </span></li>
                             <li>
-                                <input type="checkbox">1 Star(1)
+                                <input type="checkbox">0-2 point
                                 <span class="float-right">
                                         <i class="fa fa-star" aria-hidden="true"></i>
                                     </span>
@@ -224,19 +280,18 @@ session_start();
                             <div class="hotel-list-view">
                                 <div class="row hotel-search-div">
                                     <div class="col-lg-9 col-md-9 col-12">
-                                    <form action="#">
+                                    <form action="index.php" method="post">
                                         <div class="input-group">
                                             <i class="fa fa-map-marker" aria-hidden="true"></i><span>Search Address:</span>
                                             <div class="input-group-prepend">
                                                 <button class="input-group-text"><i class="fa fa-search" aria-hidden="true"></i></button>
                                             </div>
-                                            <input type="text" class="form-control" placeholder="Search for Location">
+                                            <input type="text" name="locationValueFilter" class="form-control" placeholder="Search for Location">
                                         </div>
                                     </form>
                                     </div>
-                                    <div class="col-lg-3 col-md-3 col-12 shortlist1">
-                                        <i class="fa fa-heart" aria-hidden="true"></i>
-                                        <span>You Shortlist(0)</span><i class="fa fa-long-arrow-right" aria-hidden="true"></i>
+                                    <div class="col-lg-3 col-md-3 col-12">
+                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createMotelRoom">Post Motel Room</button>
                                     </div>
                                 </div>
                                 <?php if (!empty($motelRoomList) && $motelRoomHandler->getExecutionFeedback() == 1) { ?>
@@ -266,17 +321,17 @@ session_start();
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-12 col-lg-5 col-xl-5 col-sm-12  tourDiv">
+                                    <div class="col-md-12 col-lg-4 col-xl-4 col-sm-12  tourDiv">
                                         <h4><?php echo $c["name"]?></h4>
                                         <i class="fa fa-star" aria-hidden="true"></i>
                                         <i class="fa fa-star" aria-hidden="true"></i>
                                         <i class="fa fa-star" aria-hidden="true"></i>
                                         <i class="fa fa-star" aria-hidden="true"></i>
                                         <i class="fa fa-star" aria-hidden="true"></i>
-                                        <h5><?php echo $c["price"]?>đ</h5>
+                                        <h5><?php echo $c["price"]?> triệu/tháng</h5>
                                         <span><?php echo $c["address"]?></span>
                                     </div>
-                                    <div class="col-md-12 col-lg-3 col-xl-3 col-sm-12 ratingDiv">
+                                    <div class="col-md-12 col-lg-4 col-xl-4 col-sm-12 ratingDiv">
                                         <a href="">
                                             Expert Rating
                                         </a>
@@ -285,6 +340,9 @@ session_start();
                                             <i class="fa fa-check" aria-hidden="true"></i>Free Cancellation Eligible</h6>
                                         <div class="bttn">
                                             <a href="DetailMotelRoom.php?id=<?php echo $c["id"]?>">View Details</a>
+                                        </div>
+                                        <div class="bttn">
+                                            <a href="updateRoom.php?id=<?php echo $c["id"]?>">Modify</a>
                                         </div>
                                     </div>
                                 </div>
@@ -301,7 +359,7 @@ session_start();
         </div>
     </section>
     <!--end Section1-->
-
+    </form>
     <?php if(isset($_COOKIE['is_admin']) && $_COOKIE['is_admin'] == "false") : ?>
     <div class="modal fade book-now-modal-lg" tabindex="-1" role="dialog" aria-labelledby="bookNowModalLarge" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
@@ -466,6 +524,39 @@ session_start();
         </div>
     </div>
 
+    <div class="modal fade customer-list" tabindex="-1" role="dialog" aria-labelledby="bookNowModalLarge" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Customer List</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                    <table>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Phone</th>
+                            <th>Email</th>
+                        </tr>
+                        <?php
+                        foreach ($customerList as $item){
+                            echo '
+                        <tr>
+                          <td>' . $item["cid"] . '</td>
+                          <td>' . $item["fullname"] . '</td>
+                          <td>' . $item["phone"] . '</td>
+                          <td>' . $item["email"] . '</td>
+                        </tr>
+                        ';
+                        }?>
+                    </table>
+
+            </div>
+        </div>
+    </div>
+
     <?php if(($isSessionExists == 1 && $isAdmin[1] == "false") && isset($_COOKIE['is_admin']) && $_COOKIE['is_admin'] == "false") : ?>
     <div class="modal" id="myProfileModal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
@@ -518,6 +609,64 @@ session_start();
     </div>
     <?php endif; ?>
 
+<!--    Create motel room -->
+    <div class="modal" id="createMotelRoom" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create Motel Room</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="card border-0">
+                        <div class="card-body p-0">
+                                <form action="index.php" class="form" role="form" autocomplete="off" id="create-motel-room" method="post">
+                                    <input type="number" id="motelRoomId" hidden
+                                           name="motelRoomId" >
+                                    <div class="form-group">
+                                        <label for="nameMotelRoom">Name</label>
+                                        <input type="text" class="form-control" id="nameMotelRoom"
+                                               name="nameMotelRoom" placeholder="Enter your name" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="addressMotelRoom">Address</label>
+                                        <input type="text" class="form-control" id="addressMotelRoom"
+                                               name="addressMotelRoom" placeholder="Enter address of room" required>
+                                    </div>
+                                    <div class="form-group">
+                                            <label for="summaryMotelRoom">Summary</label>
+                                        <input type="text" class="form-control" placeholder="Summary" id="summaryMotelRoom"
+                                               name="summaryMotelRoom" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="descriptionMotelRoom">Description</label>
+                                        <textarea type="text" class="form-control" placeholder="Description" id="descriptionMotelRoom"
+                                                  name="descriptionMotelRoom" required></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="priceMotelRoom">Price</label>
+                                        <input type="number" class="form-control" placeholder="Enter price of room" id="priceMotelRoom"
+                                               name="priceMotelRoom" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="contactMotelRoom">Contact</label>
+                                        <input type="number" class="form-control" id="contactMotelRoom"
+                                               name="contactMotelRoom" placeholder="Enter contact for room" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="submit" class="btn btn-primary btn-md float-right"
+                                               name="createMotelRoomBtn" value="Create">
+                                    </div>
+                                </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </main>
 
 <footer class="container">
@@ -552,8 +701,10 @@ session_start();
 
       // check-in policies popover
       $('[data-toggle="popover"]').popover();
-
     });
+    function updateMotelRoom(id) {
+        <?php $id?>=id;
+    }
 </script>
 <script src="js/multiStepsRsvn.js"></script>
 </body>

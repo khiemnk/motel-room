@@ -29,6 +29,7 @@ class DB
                 self::$instance->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT);
                 self::$instance->query('SET NAMES utf8');
                 self::$instance->query('SET CHARACTER SET utf8');
+                self::$instance->exec('set names utf8 COLLATE utf8mb4_unicode_ci');
             } catch (PDOException $error) {
                 echo $error->getMessage();
             }

@@ -5,7 +5,7 @@ class CustomerHandler extends CustomerDAO
     public function __construct()
     {
     }
-    
+
     private $executionFeedback;
 
     public function getExecutionFeedback()
@@ -21,10 +21,10 @@ class CustomerHandler extends CustomerDAO
     public function getAllCustomer()
     {
         if ($this->getAll()) {
+            $this->setExecutionFeedback(1);
             return $this->getAll();
-        } else {
-            return Util::DB_SERVER_ERROR;
         }
+        return $this->setExecutionFeedback(0);
     }
 
     public function getSingleRow($email)

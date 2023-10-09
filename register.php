@@ -26,7 +26,7 @@ if (isset($_SESSION["authenticated"]))
 <div class="container py-5">
     <div class="row">
         <div class="col-md-12">
-            <h2 class="text-center mb-5">Hotel Management System Registration</h2>
+            <h2 class="text-center mb-5">Motel Room Platform</h2>
             <div class="row">
                 <div class="col-md-6 mx-auto card-holder">
                     <div class="card border-secondary">
@@ -34,7 +34,7 @@ if (isset($_SESSION["authenticated"]))
                             <h3 class="mb-0 my-2">Sign Up</h3>
                         </div>
                         <div class="card-body">
-                            <form class="form" role="form" autocomplete="off" id="registration-form" method="post">
+                            <form action="index.php" class="form" role="form" autocomplete="off" id="registration-form" method="post">
                                 <div class="form-group">
                                     <label for="registrationFullName">Name</label>
                                     <input type="text" class="form-control"

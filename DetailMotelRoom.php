@@ -111,9 +111,9 @@
             <div class="container">
                 <div class="row highlightDiv">
                     <div class="col-lg-4 col-md-4 col-4 col-12">
-                        <h3>Sumary</h3>
+                        <h3>Summary</h3>
                         <ul>
-                            <li><?php echo $motelRoom["description"]?></li>
+                            <li><?php echo $motelRoom["summary"]?></li>
                             <!-- <li>Entire floor dedicate to women travellers with unique amenities</li> -->
                         </ul>
                     </div>
