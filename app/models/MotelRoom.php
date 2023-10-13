@@ -12,6 +12,8 @@ class MotelRoom
     private $summary;
     private $rating;
 
+    private $type;
+
     public function __construct()
     {
     }
@@ -139,5 +141,15 @@ class MotelRoom
     public function setRating($rating)
     {
         $this->rating = $rating;
+    }
+
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    public function setType($type)
+    {
+        $this->type = $type;
     }
 }

@@ -18,7 +18,8 @@ class MotelRoomDAO
         r.price,
         r.rating,
         r.summary,
-        r.created_at
+        r.created_at,
+        r.type
         FROM `motel_room` as r order by r.created_at desc';
         $stmt = DB::getInstance()->prepare($sql);
         $stmt->execute();
@@ -36,7 +37,8 @@ class MotelRoomDAO
         r.contact,
         r.price,
         r.rating,
-        r.summary
+        r.summary,
+        r.type
         FROM `motel_room` as r
         where r.id = ?;';
         $stmt = DB::getInstance()->prepare($sql);
@@ -55,7 +57,8 @@ class MotelRoomDAO
         r.contact,
         r.price,
         r.rating,
-        r.created_at
+        r.created_at,
+        r.type
         FROM motel_room AS r
         WHERE r.name like lower('%$name%')
         and r.address like lower('%$location%')
@@ -65,9 +68,26 @@ class MotelRoomDAO
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    protected function insertMotelRoom(MotelRoom $motelRoom){
-        $sql = 'INSERT INTO `motel_room` (NAME, ADDRESS, SUMMARY, IMAGE, CONTACT, PRICE, RATING, DESCRIPTION) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+    protected function getCommentOfRoom(int $id){
+        $sql = "SELECT
+        c2.fullname,
+        c.content,
+        c.created_at
+        FROM motel_room AS r join comment c on r.id = c.motel_room_id
+        join customer c2 on c.customer_id = c2.cid
+        WHERE
+        r.id = $id
+        order by r.created_at desc;";
+        $stmt = DB::getInstance()->prepare($sql);
+        $stmt->execute();
+//        $stmt->debugDumpParams();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    protected function insertMotelRoom(MotelRoom $motelRoom)
+    {
+        $sql = 'INSERT INTO `motel_room` (NAME, ADDRESS, SUMMARY, IMAGE, CONTACT, PRICE, RATING, DESCRIPTION, TYPE) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
         $stmt = DB::getInstance()->prepare($sql);
         $exec = $stmt->execute(
             array(
@@ -78,14 +98,31 @@ class MotelRoomDAO
                 $motelRoom->getContact(),
                 $motelRoom->getPrice(),
                 $motelRoom->getRating(),
-                $motelRoom->getDescription()
+                $motelRoom->getDescription(),
+                $motelRoom->getType()
             )
         );
 //        $stmt->debugDumpParams();
         return $exec;
     }
 
-    protected function updateToDB(MotelRoom $motelRoom){
+    protected function insertComment(int $idRoom,int $cusId ,string $comment){
+        $sql = 'INSERT INTO `comment` (MOTEL_ROOM_ID, CUSTOMER_ID, CONTENT) 
+        VALUES (?, ?, ?)';
+        $stmt = DB::getInstance()->prepare($sql);
+        $exec = $stmt->execute(
+            array(
+                $idRoom,
+                $cusId,
+                $comment
+            )
+        );
+//        $stmt->debugDumpParams();
+        return $exec;
+    }
+
+    protected function updateToDB(MotelRoom $motelRoom)
+    {
         $sql = 'UPDATE `motel_room` r SET r.name = ?,
         r.address = ?,
         r.summary = ?,
@@ -93,7 +130,8 @@ class MotelRoomDAO
         r.contact = ?,
         r.price = ?,
         r.rating = ?,
-        r.description = ?
+        r.description = ?,
+        r.type = ?
         where r.id = ?';
         $stmt = DB::getInstance()->prepare($sql);
         $exec = $stmt->execute(
@@ -106,6 +144,7 @@ class MotelRoomDAO
                 $motelRoom->getPrice(),
                 $motelRoom->getRating(),
                 $motelRoom->getDescription(),
+                $motelRoom->getType(),
                 $motelRoom->getId()
             )
         );

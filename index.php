@@ -13,6 +13,7 @@ session_start();
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <link rel="shortcut icon" type="image/x-icon" href="assets/images/inner/favicon.png" />
     <link rel="stylesheet" type="text/css" href="calenplugin/css/daterangepicker.css">
+    <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
 <!--     <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css" />-->
     <link rel="stylesheet" type="text/css" href="assets/css/animate.css" />
@@ -27,7 +28,6 @@ session_start();
     <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/select/1.2.5/css/select.dataTables.min.css">
-    <link rel="stylesheet" href="css/main.css">
 
     <style>
         table {
@@ -90,6 +90,7 @@ session_start();
             $description = $_POST["descriptionMotelRoom"];
             $price = $_POST["priceMotelRoom"];
             $contact = $_POST["contactMotelRoom"];
+            $type = $_POST["typeMotelRoom"];
             $motelRoom = new MotelRoom();
             $motelRoom->setId($id);
             $motelRoom->setName($name);
@@ -100,6 +101,7 @@ session_start();
             $motelRoom->setPrice($price);
             $motelRoom->setImage("image/tro1.jpg");
             $motelRoom->setRating("10");
+            $motelRoom->setType($type);
             if ($id != null){
                 $motelRoomHandler->updateMotelRoom($motelRoom);
             }
@@ -135,9 +137,31 @@ session_start();
     ?>
     <title>Home</title>
     <?php //echo '<title>Home isAdmin=' . $isAdmin . ' $isSessionExists=' . $isSessionExists . '</title>'?>
+    <?php
+
+    if (!isset($_SESSION)) {
+        session_start();
+    }
+
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $_SESSION['postdata'] = $_POST;
+        unset($_POST);
+        header("Location: ".$_SERVER['PHP_SELF']);
+        exit;
+    }
+
+    // This code can be used anywhere you redirect your user to using the header("Location: ...")
+    if (array_key_exists('postdata', $_SESSION)) {
+        // Handle your submitted form here using the $_SESSION['postdata'] instead of $_POST
+
+        // After using the postdata, don't forget to unset/clear it
+        unset($_SESSION['postdata']);
+    }
+    ?>
 </head>
 <script>
-
+  document.getElementById("filterMotelRoom").reset();
+  document.getElementById("createMotelRoom").reset();
 </script>
 <body>
 
@@ -332,14 +356,13 @@ session_start();
                                         <span><?php echo $c["address"]?></span>
                                     </div>
                                     <div class="col-md-12 col-lg-4 col-xl-4 col-sm-12 ratingDiv">
-                                        <a href="">
-                                            Expert Rating
-                                        </a>
-                                        <span class="rate"><?php echo $c["rating"]?></span>
+                                        <h5 style="font-family: Montserrat !important;">
+                                            <?php echo $c["type"]?>
+                                        </h5>
                                         <h6 class="perday">
                                             <i class="fa fa-check" aria-hidden="true"></i>Free Cancellation Eligible</h6>
                                         <div class="bttn">
-                                            <a href="DetailMotelRoom.php?id=<?php echo $c["id"]?>">View Details</a>
+                                            <a href="DetailMotelRoom.php?id=<?php echo $c["id"]?>&cusId=<?php echo $cHandler->getId()?>">View Details</a>
                                         </div>
                                         <div class="bttn">
                                             <a href="updateRoom.php?id=<?php echo $c["id"]?>">Modify</a>
@@ -622,37 +645,45 @@ session_start();
                 <div class="modal-body">
                     <div class="card border-0">
                         <div class="card-body p-0">
-                                <form action="index.php" class="form" role="form" autocomplete="off" id="create-motel-room" method="post">
-                                    <input type="number" id="motelRoomId" hidden
+                                <form action="index.php" class="form" role="form" autocomplete="off" id="create-motel-room" method="post" onsubmit="">
+                                    <input type="number" id="createMotelRoom" hidden
                                            name="motelRoomId" >
                                     <div class="form-group">
                                         <label for="nameMotelRoom">Name</label>
-                                        <input type="text" class="form-control" id="nameMotelRoom"
+                                        <input type="text" class="form-control" id="createMotelRoom"
                                                name="nameMotelRoom" placeholder="Enter your name" required>
                                     </div>
                                     <div class="form-group">
+                                        <label for="typeRoom">Type</label>
+                                        <select id="createMotelRoom" name="typeMotelRoom" class="form-control">
+                                            <option value="Nhà trọ">Nhà Trọ</option>
+                                            <option value="Chung cư">Chung cư</option>
+                                            <option value="Ở ghép">Ở ghép</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
                                         <label for="addressMotelRoom">Address</label>
-                                        <input type="text" class="form-control" id="addressMotelRoom"
+                                        <input type="text" class="form-control" id="createMotelRoom"
                                                name="addressMotelRoom" placeholder="Enter address of room" required>
                                     </div>
                                     <div class="form-group">
                                             <label for="summaryMotelRoom">Summary</label>
-                                        <input type="text" class="form-control" placeholder="Summary" id="summaryMotelRoom"
+                                        <input type="text" class="form-control" placeholder="Summary" id="createMotelRoom"
                                                name="summaryMotelRoom" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="descriptionMotelRoom">Description</label>
-                                        <textarea type="text" class="form-control" placeholder="Description" id="descriptionMotelRoom"
+                                        <textarea type="text" class="form-control" placeholder="Description" id="createMotelRoom"
                                                   name="descriptionMotelRoom" required></textarea>
                                     </div>
                                     <div class="form-group">
                                         <label for="priceMotelRoom">Price</label>
-                                        <input type="number" class="form-control" placeholder="Enter price of room" id="priceMotelRoom"
+                                        <input type="number" class="form-control" placeholder="Enter price of room" id="createMotelRoom"
                                                name="priceMotelRoom" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="contactMotelRoom">Contact</label>
-                                        <input type="number" class="form-control" id="contactMotelRoom"
+                                        <input type="number" class="form-control" id="createMotelRoom"
                                                name="contactMotelRoom" placeholder="Enter contact for room" required>
                                     </div>
                                     <div class="form-group">

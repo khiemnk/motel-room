@@ -68,3 +68,7 @@ textarea#specialRequests {
 input.invalid, select.invalid {
     background-color: #ffdddd;
 }
+
+.link-muted { color: #aaa; } .link-muted:hover { color: #1266f1; }
+
+

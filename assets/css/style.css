@@ -1963,9 +1963,9 @@ text-align: center;
     font-size:1.2rem;
     color: #808080;
    }
-   .card{
-    cursor: pointer;
-   }
+   /*.card{*/
+   /* cursor: pointer;*/
+   /*}*/
    .placeName h5{
      color: #fff;
    }
@@ -1976,15 +1976,15 @@ text-align: center;
      text-decoration: none;
      color: #fff;
    }
-   .card img{
-    width: 100%;
-   }
-   .card-body p{
-    font-size: 14px;
-   }
-   .card:hover{
-     box-shadow: 2px 2px 2px #ccc;
-   }
+   /*.card img{*/
+   /* width: 10%;*/
+   /*}*/
+   /*.card-body p{*/
+   /* font-size: 14px;*/
+   /*}*/
+   /*.card:hover{*/
+   /*  box-shadow: 2px 2px 2px #ccc;*/
+   /*}*/
    .exclusiveDiv{
     border-right: 1px solid #ccc;
    }

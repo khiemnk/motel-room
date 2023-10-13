@@ -61,4 +61,20 @@ class MotelRoomHandler extends MotelRoomDAO
         return $this->setExecutionFeedback(0);
     }
 
+    public function getAllComment(int $idRoom)
+    {
+        if ($this->getCommentOfRoom($idRoom)) {
+            $this->setExecutionFeedback(1);
+            return $this->getCommentOfRoom($idRoom);
+        }
+        return $this->setExecutionFeedback(0);
+    }
+
+    public function addComment(int $idRoom,int $cusId ,string $comment)
+    {
+        if ($this->insertComment($idRoom, $cusId , $comment)) {
+            return $this->setExecutionFeedback(1);
+        }
+        return $this->setExecutionFeedback(0);
+    }
 }
