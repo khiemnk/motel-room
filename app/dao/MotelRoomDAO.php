@@ -10,7 +10,7 @@ class MotelRoomDAO
     {
         $sql = 'SELECT 
         r.id,
-        r.owner_id as ownerId,
+        r.owner_id,
         r.name,
         r.address,
         r.description,
@@ -55,7 +55,7 @@ class MotelRoomDAO
     {
         $sql = "SELECT
         r.id,
-        r.owner_id as ownerId,
+        r.owner_id,
         r.name,
         r.address,
         r.description,

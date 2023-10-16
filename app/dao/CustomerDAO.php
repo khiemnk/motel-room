@@ -29,8 +29,16 @@ class CustomerDAO
         c.cid,
         c.fullname,
         c.phone,
-        c.email
-        FROM `customer` c";
+        c.email,
+        r.name,
+        m.motel_room_id,
+        m.rental_start_date,
+        m.total_month_rental,
+        m.created_at
+        FROM `customer` c 
+        join `renting` m on c.cid = m.owner_id 
+        join `motel_room` r on m.motel_room_id = r.id
+        order by m.created_at desc;";
         $stmt = DB::getInstance()->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
