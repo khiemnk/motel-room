@@ -122,7 +122,7 @@ session_start();
         $motelRoomList = $motelRoomHandler->getAllMotelRoom();
 
         $customerHandler = new CustomerHandler();
-        $customerList = $customerHandler->getAllCustomer();
+        $customerList = $customerHandler->getAllCustomer($cHandler->getId());
         if (array_key_exists('postdata', $_SESSION)) {
             $priceLess1 = $price1To2 = $price2To3 = $price3To4 = $priceMore4 = $nhaTro = $chungCu = $oGhep = null;
             if (isset($_SESSION['postdata']["priceLess1"])) {
@@ -189,7 +189,7 @@ session_start();
                     unset($motelRoomList[$k]);
                 }
             if (isset($_SESSION['postdata']['motelRoomId']) && isset($_SESSION['postdata']['startDateRent'])
-                && isset($_SESSION['postdata']['numberMonthRent'])){
+                && isset($_SESSION['postdata']['numberMonthRent'])) {
                 $motelRoomId = $_SESSION['postdata']['motelRoomId'];
                 $startDateRent = $_SESSION['postdata']['startDateRent'];
                 $numberMonthRent = $_SESSION['postdata']['numberMonthRent'];
@@ -199,6 +199,16 @@ session_start();
 
             // After using the postdata, don't forget to unset/clear it
             unset($_SESSION['postdata']);
+        }
+        if (isset($_GET['id'])) {
+            $id = $_GET['id'];
+            if ($id == $cHandler->getId()) {
+                foreach ($motelRoomList as $k => $item) {
+                    if ($item["owner_id"] != $cHandler->getId()) {
+                        unset($motelRoomList[$k]);
+                    }
+                }
+            }
         }
         $isSessionExists = true;
         $isAdmin = $_SESSION["authenticated"];
@@ -249,7 +259,9 @@ session_start();
                             <li><a href="#" id="sign-out-link" class="text-white">Sign out<i
                                             class="fas fa-sign-out-alt ml-2"></i></a></li>
                             <li><a href="#" data-toggle="modal" data-target=".customer-list" id="sign-out-link"
-                                   class="text-white">Customer List<i class="fas fa-sign-out-alt ml-2"></i></a></li>
+                                   class="text-white">Customer Renting List<i class="fas fa-sign-out-alt ml-2"></i></a></li>
+                            <li><a href="index.php?id=<?php echo $cHandler->getId() ?>" id="sign-out-link"
+                                   class="text-white">My Room List<i class="fas fa-sign-out-alt ml-2"></i></a></li>
                         </ul>
                     <?php } else { ?>
                         <h4>
@@ -374,7 +386,7 @@ session_start();
                                             if ($dem == 20) break;
                                             if (!isset($item)) continue;
                                             $dem++;
-                                            $numberMonthRent = $item ?>
+                                            $item ?>
                                             <div class="row hotel-name">
                                                 <div class="col-md-12 col-lg-4 col-xl-4 col-sm-12">
                                                     <div class="banner1">
@@ -390,15 +402,18 @@ session_start();
                                                             <!-- The slideshow -->
                                                             <div class="carousel-inner">
                                                                 <div class="carousel-item active">
-                                                                    <img src=<?php echo $numberMonthRent["image"] ?> alt="Single Room"
+                                                                    <img src=<?php echo $item["image"] ?> alt="Single
+                                                                         Room"
                                                                     />
                                                                 </div>
                                                                 <div class="carousel-item">
-                                                                    <img src=<?php echo $numberMonthRent["image"] ?> alt="Single Room"
+                                                                    <img src=<?php echo $item["image"] ?> alt="Single
+                                                                         Room"
                                                                     />
                                                                 </div>
                                                                 <div class="carousel-item">
-                                                                    <img src=<?php echo $numberMonthRent["image"] ?> alt="Single Room"
+                                                                    <img src=<?php echo $item["image"] ?> alt="Single
+                                                                         Room"
                                                                     />
                                                                 </div>
                                                             </div>
@@ -406,30 +421,37 @@ session_start();
                                                     </div>
                                                 </div>
                                                 <div class="col-md-12 col-lg-4 col-xl-4 col-sm-12  tourDiv">
-                                                    <h4><?php echo $numberMonthRent["name"] ?></h4>
-                                                    <h6><?php echo $numberMonthRent["price"] ?> triệu/tháng</h6>
-                                                    <span><?php echo $numberMonthRent["address"] ?></span>
+                                                    <h4><?php echo $item["name"] ?></h4>
+                                                    <h6><?php echo $item["price"] ?> triệu/tháng</h6>
+                                                    <span><?php echo $item["address"] ?></span><br>
+                                                    <?php if (isset($_GET["id"]) && $_GET["id"] == $cHandler->getId()) { ?>
+                                                    <span>Room Id: <?php echo $item["id"] ?></span>
+                                                    <?php } ?>
                                                 </div>
                                                 <div class="col-md-12 col-lg-4 col-xl-4 col-sm-12 ratingDiv">
                                                     <h5 style="font-family: Montserrat !important;">
-                                                        <?php echo $numberMonthRent["type"] ?>
+                                                        <?php echo $item["type"] ?>
                                                     </h5>
-                                                    <?php if($numberMonthRent["is_available"] == 0) {?>
-                                                    <h6 class="perday" style="color:#ff5d3a;font-size: 14px"><i class="fa fa-check" aria-hidden="true"></i>Hết phòng</h6>
-                                                    <?php } else {?>
-                                                    <h6 class="perday" style="font-size: 14px"><i class="fa fa-check" aria-hidden="true"></i>Còn phòng</h6>
-                                                    <?php }?>
+                                                    <?php if ($item["is_available"] == 0) { ?>
+                                                        <h6 class="perday" style="color:#ff5d3a;font-size: 14px"><i
+                                                                    class="fa fa-check" aria-hidden="true"></i>Hết phòng
+                                                        </h6>
+                                                    <?php } else { ?>
+                                                        <h6 class="perday" style="font-size: 14px"><i
+                                                                    class="fa fa-check" aria-hidden="true"></i>Còn phòng
+                                                        </h6>
+                                                    <?php } ?>
                                                     <div class="bttn">
-                                                        <a href="DetailMotelRoom.php?id=<?php echo $numberMonthRent["id"] ?>&cusId=<?php echo $cHandler->getId() ?>">View
+                                                        <a href="DetailMotelRoom.php?id=<?php echo $item["id"] ?>&cusId=<?php echo $cHandler->getId() ?>">View
                                                             Details</a>
                                                     </div>
-                                                    <?php if ($cHandler->getId() == $numberMonthRent["ownerId"]) { ?>
+                                                    <?php if ($cHandler->getId() == $item["owner_id"]) { ?>
                                                         <div class="bttn">
-                                                            <a href="updateRoom.php?id=<?php echo $numberMonthRent["id"] ?>">Modify</a>
+                                                            <a href="updateRoom.php?id=<?php echo $item["id"] ?>">Modify</a>
                                                         </div>
-                                                    <?php } else { ?>
+                                                    <?php } else if ($item["is_available"] == 1) { ?>
                                                         <div class="bttn" style="background-color: #4ca2be">
-                                                            <a href="rentRoom.php?id=<?php echo $numberMonthRent["id"] ?>">Rent</a>
+                                                            <a href="rentRoom.php?id=<?php echo $item["id"] ?>">Rent</a>
                                                         </div>
                                                     <?php } ?>
                                                 </div>
@@ -639,26 +661,37 @@ session_start();
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Customer List</h5>
+                    <h5 class="modal-title">Customer Renting List</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <table>
                     <tr>
-                        <th>ID</th>
+                        <th>STT</th>
                         <th>Name</th>
                         <th>Phone</th>
                         <th>Email</th>
+                        <th>Room Id</th>
+                        <th>Rental Start Date</th>
+                        <th>Estimate Month Rental</th>
+                        <th>Created At</th>
                     </tr>
                     <?php
+                    $i = 0;
+                    if ($customerList != null)
                     foreach ($customerList as $item) {
+                        $i++;
                         echo '
                         <tr>
-                          <td>' . $item["cid"] . '</td>
+                          <td>' . $i . '</td>
                           <td>' . $item["fullname"] . '</td>
                           <td>' . $item["phone"] . '</td>
                           <td>' . $item["email"] . '</td>
+                          <td>' . $item["motel_room_id"] . '</td>
+                          <td>' . $item["rental_start_date"] . '</td>
+                          <td>' . $item["total_month_rental"] . '</td>
+                          <td>' . $item["created_at"] . '</td>
                         </tr>
                         ';
                     } ?>

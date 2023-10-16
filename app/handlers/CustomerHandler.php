@@ -18,11 +18,11 @@ class CustomerHandler extends CustomerDAO
         $this->executionFeedback = $executionFeedback;
     }
 
-    public function getAllCustomer()
+    public function getAllCustomer($cusId)
     {
-        if ($this->getAll()) {
+        if ($this->getAll($cusId)) {
             $this->setExecutionFeedback(1);
-            return $this->getAll();
+            return $this->getAll($cusId);
         }
         return $this->setExecutionFeedback(0);
     }
