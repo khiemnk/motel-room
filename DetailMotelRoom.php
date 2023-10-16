@@ -112,8 +112,7 @@
                     </div>
                 </div>
                 <div class="col-lg-6 col-md-6 col-6 col-12 shortlist text-right">
-                    <span class="short-bold"><?php echo $motelRoom["price"] ?>đ</span>
-                    <span class="short-btn"><i class="fa fa-heart-o" aria-hidden="true"></i> Shortlist</span>
+                    <span class="short-bold"><?php echo $motelRoom["price"] ?>tr/tháng</span>
                 </div>
             </div>
         </div>
@@ -425,17 +424,17 @@
             </div>
             <div class="col-lg-3 col-md-4 col-12 foot-social">
                 connect
-                <a class="social-footer" href="https://www.facebook.com/travjurys" target="_blank">
+                <a class="social-footer" href="https://www.facebook.com/profile.php?id=100016667496824" target="_blank">
                     <i class="fa fa-facebook"></i>
                 </a>
-                <a class="social-footer" href="https://twitter.com/travjuryS" target="_blank">
+                <a class="social-footer" href="https://www.instagram.com/tr.vicorine/" target="_blank">
                     <i class="fa fa-twitter"></i>
                 </a>
-                <a class="social-footer" href="https://www.linkedin.com/company/travjury-software-pvt-ltd"
+                <a class="social-footer" href="https://www.linkedin.com/in/nguyen-kha-khiem-b96a731b7/"
                    target="_blank">
                     <i class="fa fa-linkedin"></i>
                 </a>
-                <a class="social-footer" href="https://in.pinterest.com/travjurysoftware/?autologin=true"
+                <a class="social-footer" href="https://www.pinterest.com/pin/168251736074943245/"
                    target="_blank">
                     <i class="fa fa-pinterest-p" aria-hidden="true"></i>
                 </a>
@@ -449,7 +448,7 @@
         <div class="modal-content">
             <!-- Modal Header -->
             <div class="modal-header">
-                <h4 class="modal-title">The Chancery Pavilion - Bengalore(10 Nights)</h4>
+                <h4 class="modal-title">Photos</h4>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <!-- Modal body -->

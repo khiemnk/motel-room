@@ -3,6 +3,7 @@
 class MotelRoom
 {
     private $id;
+    private $ownerId;
     private $name;
     private $address;
     private $description;
@@ -28,6 +29,15 @@ class MotelRoom
         $this->id = $id;
     }
 
+    public function getOwnerId()
+    {
+        return $this->ownerId;
+    }
+
+    public function setOwnerId($ownerId)
+    {
+        $this->ownerId = $ownerId;
+    }
 	/**
 	 * @return mixed
 	 */

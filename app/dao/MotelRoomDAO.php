@@ -10,6 +10,7 @@ class MotelRoomDAO
     {
         $sql = 'SELECT 
         r.id,
+        r.owner_id as ownerId,
         r.name,
         r.address,
         r.description,
@@ -19,7 +20,8 @@ class MotelRoomDAO
         r.rating,
         r.summary,
         r.created_at,
-        r.type
+        r.type,
+        r.is_available
         FROM `motel_room` as r order by r.created_at desc';
         $stmt = DB::getInstance()->prepare($sql);
         $stmt->execute();
@@ -30,6 +32,7 @@ class MotelRoomDAO
     {
         $sql = 'SELECT 
         r.id,
+        r.owner_id,
         r.name,
         r.address,
         r.description,
@@ -38,11 +41,13 @@ class MotelRoomDAO
         r.price,
         r.rating,
         r.summary,
-        r.type
+        r.type,
+        r.is_available
         FROM `motel_room` as r
         where r.id = ?;';
         $stmt = DB::getInstance()->prepare($sql);
         $stmt->execute([$id]);
+//        $stmt->debugDumpParams();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -50,6 +55,7 @@ class MotelRoomDAO
     {
         $sql = "SELECT
         r.id,
+        r.owner_id as ownerId,
         r.name,
         r.address,
         r.description,
@@ -58,7 +64,8 @@ class MotelRoomDAO
         r.price,
         r.rating,
         r.created_at,
-        r.type
+        r.type,
+        r.is_available
         FROM motel_room AS r
         WHERE r.name like lower('%$name%')
         and r.address like lower('%$location%')
@@ -86,11 +93,12 @@ class MotelRoomDAO
 
     protected function insertMotelRoom(MotelRoom $motelRoom)
     {
-        $sql = 'INSERT INTO `motel_room` (NAME, ADDRESS, SUMMARY, IMAGE, CONTACT, PRICE, RATING, DESCRIPTION, TYPE) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
+        $sql = 'INSERT INTO `motel_room` (OWNER_ID, NAME, ADDRESS, SUMMARY, IMAGE, CONTACT, PRICE, RATING, DESCRIPTION, TYPE) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
         $stmt = DB::getInstance()->prepare($sql);
         $exec = $stmt->execute(
             array(
+                $motelRoom->getOwnerId(),
                 $motelRoom->getName(),
                 $motelRoom->getAddress(),
                 $motelRoom->getSummary(),
@@ -102,7 +110,7 @@ class MotelRoomDAO
                 $motelRoom->getType()
             )
         );
-//        $stmt->debugDumpParams();
+        $stmt->debugDumpParams();
         return $exec;
     }
 
@@ -115,6 +123,33 @@ class MotelRoomDAO
                 $idRoom,
                 $cusId,
                 $comment
+            )
+        );
+//        $stmt->debugDumpParams();
+        return $exec;
+    }
+
+    protected function addRenting($idCus,$ownerId, $idRoom, $startDateRent, $numberMonthRent){
+        $sql = 'INSERT INTO `renting` (CUSTOMER_ID, OWNER_ID, MOTEL_ROOM_ID, RENTAL_START_DATE, TOTAL_MONTH_RENTAL, STATUS) 
+        VALUES (?, ?, ?, ?, ?, ?)';
+        $stmt = DB::getInstance()->prepare($sql);
+        $exec = $stmt->execute(
+            array(
+                $idCus,
+                $ownerId,
+                $idRoom,
+                $startDateRent,
+                $numberMonthRent,
+                "pending"
+            )
+        );
+        $sql = 'UPDATE `motel_room` r SET r.is_available = ?
+        where r.id = ?';
+        $stmt = DB::getInstance()->prepare($sql);
+        $exec = $stmt->execute(
+            array(
+                '0',
+                $idRoom
             )
         );
 //        $stmt->debugDumpParams();

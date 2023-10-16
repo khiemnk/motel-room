@@ -53,6 +53,13 @@ class MotelRoomHandler extends MotelRoomDAO
         return $this->setExecutionFeedback(0);
     }
 
+    public function addRentingMotelRoom(int $idCus, int $ownerId, int $idRoom, $startDateRent, int $numberMonthRent ){
+        if ($this->addRenting($idCus,$ownerId, $idRoom, $startDateRent, $numberMonthRent)) {
+            return $this->setExecutionFeedback(1);
+        }
+        return $this->setExecutionFeedback(0);
+    }
+
     public function updateMotelRoom(MotelRoom $motelRoom)
     {
         if ($this->updateToDB($motelRoom)) {
