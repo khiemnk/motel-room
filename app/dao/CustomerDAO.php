@@ -23,7 +23,7 @@ class CustomerDAO
         return $stmt->fetchAll(PDO::FETCH_CLASS, "Customer");
     }
 
-    protected function getAll()
+    protected function getAll(int $cusId)
     {
         $sql = "SELECT
         c.cid,
@@ -38,9 +38,11 @@ class CustomerDAO
         FROM `customer` c 
         join `renting` m on c.cid = m.owner_id 
         join `motel_room` r on m.motel_room_id = r.id
+        where c.cid = $cusId
         order by m.created_at desc;";
         $stmt = DB::getInstance()->prepare($sql);
         $stmt->execute();
+//        $stmt->debugDumpParams();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
