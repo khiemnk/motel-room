@@ -110,7 +110,7 @@ class MotelRoomDAO
                 $motelRoom->getType()
             )
         );
-        $stmt->debugDumpParams();
+//        $stmt->debugDumpParams();
         return $exec;
     }
 

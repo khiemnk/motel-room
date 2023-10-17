@@ -27,6 +27,15 @@ class CustomerHandler extends CustomerDAO
         return $this->setExecutionFeedback(0);
     }
 
+    public function getRentingRoom($cusId)
+    {
+        if ($this->getMyRenting($cusId)) {
+            $this->setExecutionFeedback(1);
+            return $this->getMyRenting($cusId);
+        }
+        return $this->setExecutionFeedback(0);
+    }
+
     public function getSingleRow($email)
     {
         if ($this->getByEmail($email)) {

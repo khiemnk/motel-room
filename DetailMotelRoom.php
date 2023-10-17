@@ -31,6 +31,10 @@
     require 'app/handlers/BookingDetailHandler.php';
     require 'app/handlers/MotelRoomHandler.php';
 
+    if (!isset($_SESSION)) {
+        session_start();
+    }
+
     $motelRoom = $motelRoomHandler = $motelRoomList = $commentList = null;
     $id = $_GET['id'];
     $cusId = $_GET['cusId'];
@@ -39,18 +43,8 @@
     $motelRoomList = $motelRoomHandler->getMotelRoomById($id);
     $motelRoom = $motelRoomList[0];
 
-    if (isset($_POST["contentOfComment"])) {
-        $contentOfComment = $_POST["contentOfComment"];
-        $motelRoomHandler->addComment($id, $cusId, $contentOfComment);
-    }
-    $commentList = $motelRoomHandler->getAllComment($id);
-    ?>
-    <?php
-
-    if (!isset($_SESSION)) {
-        session_start();
-    }
-
+    $summary = $motelRoom["summary"];
+    $summaryList = explode(".", $summary);
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $_SESSION['postdata'] = $_POST;
         unset($_POST);
@@ -61,10 +55,18 @@
     // This code can be used anywhere you redirect your user to using the header("Location: ...")
     if (array_key_exists('postdata', $_SESSION)) {
         // Handle your submitted form here using the $_SESSION['postdata'] instead of $_POST
-
+        if (isset($_SESSION['postdata']["contentOfComment"])) {
+            $contentOfComment = $_SESSION['postdata']["contentOfComment"];
+            $motelRoomHandler->addComment($id, $cusId, $contentOfComment);
+        }
         // After using the postdata, don't forget to unset/clear it
         unset($_SESSION['postdata']);
     }
+
+    $commentList = $motelRoomHandler->getAllComment($id);
+    ?>
+    <?php
+
     ?>
 </head>
 <body>
@@ -76,7 +78,7 @@
                 <nav class="navbar navbar-expand-lg navbar-light">
                     <a href="index.php" class="navbar-brand font-weight-bold wow fadeInDown">
                         <h2>
-                            Motel Room Platform
+                            DigiTall Renting Platform
                         </h2>
                     </a>
                 </nav>
@@ -107,7 +109,6 @@
                         </div>
                         <div class="col-lg-9 col-md-9 col-xl-9 col-12 tripDiv">
                             <div><img src="assets/images/inner/trip.png" alt="hotelselect"></div>
-                            <span>1918 reviews</span>
                         </div>
                     </div>
                 </div>
@@ -119,9 +120,9 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-md-8 col-xl-8 col-12 hotel-menu">
-                    <a href="#section3">Amenties & Review</a>
+                    <a href="#section3">Details</a>
                     <a href="" data-toggle="modal" data-target="#myModal">Photos </a>
-                    <a href="" data-toggle="modal" data-target="#myModal1">Map</a>
+<!--                    <a href="" data-toggle="modal" data-target="#myModal1">Map</a>-->
                 </div>
             </div>
         </div>
@@ -129,7 +130,7 @@
         <div class="container">
             <div class="row hotel-banner">
                 <div class="col-12 ">
-                    <img src="assets/images/select/hotel1.jpg" alt="hotelselect">
+                    <img src="<?php echo $motelRoom["image"]?>" width="357" height="238" alt="hotelselect">
                     <img src="assets/images/select/hotel3.jpg" alt="hotelselect">
                     <a href="" data-toggle="modal" data-target="#myModal2"><img src="assets/images/select/hotel4.jpg"
                                                                                 alt="hotelselect"></a>
@@ -141,7 +142,9 @@
                 <div class="col-lg-4 col-md-4 col-4 col-12">
                     <h3>Summary</h3>
                     <ul>
-                        <li><?php echo $motelRoom["summary"] ?></li>
+                        <?php foreach ($summaryList as $s){?>
+                        <li><?php echo $s ?></li>
+                        <?php } ?>
                         <!-- <li>Entire floor dedicate to women travellers with unique amenities</li> -->
                     </ul>
                 </div>
@@ -157,180 +160,16 @@
         <div class="container" id="section3">
             <div class="row">
                 <div class="col-12 amenitiesDiv">
-                    <span>Amenities & Info</span>
+                    <span>Details</span>
                 </div>
             </div>
             <div class="row">
                 <div class="col-lg-4 col-md-4 col-xl-4 col-12 about-hotel">
-                    <img src="assets/images/select/dining.jpg" alt="hotelselect">
-                    <img src="assets/images/select/bar.jpg" alt="hotelselect">
-                    <img src="assets/images/select/banquet.jpeg" alt="hotelselect">
-                    <img src="assets/images/select/spa.jpg" alt="hotelselect">
+                    <img src="<?php echo $motelRoom["image"] ?>" alt="hotelselect">
                 </div>
                 <div class="col-lg-8 col-md-8 col-xl-8 col-12 hotel-info">
                     <h3>About the Room</h3>
                     <p><?php echo $motelRoom["description"] ?></p>
-                    <div class="row">
-                        <div class="col-12 room-title">
-                            <h3>Quick facts</h3>
-                        </div>
-                    </div>
-                    <div class="row quick-fact">
-                        <div class="col-lg-2 col-md-2 col-xl-2 col-6">
-                            <h2>2 PM</h2>
-                            <span>Check-in</span>
-                        </div>
-                        <div class="col-lg-2 col-md-2 col-xl-2 col-6">
-                            <h2>12 PM</h2>
-                            <span>Check-out</span>
-                        </div>
-                        <div class="col-lg-2 col-md-2 col-xl-2 col-6">
-                            <h2>225</h2>
-                            <span>Rooms</span>
-                        </div>
-                        <div class="col-lg-6 col-md-6 col-xl-6 col-6">
-                            <h2>8</h2>
-                            <span>Floors</span>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 room-title">
-                            <h3>General</h3>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-4 col-md-4 col-xl-4 col-12 facilityDiv1">
-                            <div><i class="fa fa-check" aria-hidden="true"></i>24 Hour Front Desk</div>
-                            <div><i class="fa fa-check" aria-hidden="true"></i>Doctor on Call</div>
-                            <div><i class="fa fa-check" aria-hidden="true"></i>Housekeeping</div>
-                            <div><i class="fa fa-check" aria-hidden="true"></i>Telephone Service</div>
-                        </div>
-                        <div class="col-lg-4 col-md-4 col-xl-4 col-12 facilityDiv1">
-                            <div><i class="fa fa-check" aria-hidden="true"></i>24 Hour Security</div>
-                            <div><i class="fa fa-check" aria-hidden="true"></i>Doorman</div>
-                            <div><i class="fa fa-check" aria-hidden="true"></i>Internet</div>
-                        </div>
-                        <div class="col-lg-4 col-md-4 col-xl-4 col-12 facilityDiv1">
-                            <div><i class="fa fa-check" aria-hidden="true"></i>Air Conditioning</div>
-                            <div><i class="fa fa-check" aria-hidden="true"></i>Elevator</div>
-                            <div><i class="fa fa-check" aria-hidden="true"></i>Laundry</div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 room-title">
-                            <h3>Food & Beverage</h3>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-4 col-md-4 col-xl-4 col-12 facilityDiv1">
-                            <div><i class="fa fa-check" aria-hidden="true"></i>24 Hour Room Service</div>
-                            <div><i class="fa fa-check" aria-hidden="true"></i>Coffee Shop</div>
-                            <div><i class="fa fa-check" aria-hidden="true"></i>Room Service</div>
-                        </div>
-                        <div class="col-lg-4 col-md-4 col-xl-4 col-12 facilityDiv1">
-                            <div><i class="fa fa-check" aria-hidden="true"></i>Banquet Hall</div>
-                            <div><i class="fa fa-check" aria-hidden="true"></i>Lounge</div>
-                        </div>
-                        <div class="col-lg-4 col-md-4 col-xl-4 col-12 facilityDiv1">
-                            <div><i class="fa fa-check" aria-hidden="true"></i>Bar</div>
-                            <div><i class="fa fa-check" aria-hidden="true"></i>Restaurant</div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 room-title">
-                            <h3>Business Services</h3>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-4 col-md-4 col-xl-4 col-12 facilityDiv1">
-                            <div><i class="fa fa-check" aria-hidden="true"></i>Audio Visual Equipment</div>
-                            <div><i class="fa fa-check" aria-hidden="true"></i>Conference Hall</div>
-                            <div><i class="fa fa-check" aria-hidden="true"></i>Meeting Room</div>
-                        </div>
-                        <div class="col-lg-4 col-md-4 col-xl-4 col-12 facilityDiv1">
-                            <div><i class="fa fa-check" aria-hidden="true"></i>Board Room</div>
-                            <div><i class="fa fa-check" aria-hidden="true"></i>Fax</div>
-                            <div><i class="fa fa-check" aria-hidden="true"></i>Photocopy</div>
-                        </div>
-                        <div class="col-lg-4 col-md-4 col-xl-4 col-12 facilityDiv1">
-                            <div><i class="fa fa-check" aria-hidden="true"></i>Business Centre</div>
-                            <div><i class="fa fa-check" aria-hidden="true"></i>LCD/Projector</div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 room-title">
-                            <h3>Front Desk Services</h3>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-4 col-md-4 col-xl-4 col-12 facilityDiv1">
-                            <div><i class="fa fa-check" aria-hidden="true"></i>Concierge</div>
-                        </div>
-                        <div class="col-lg-8 col-md-8 col-xl-8 col-12 facilityDiv1">
-                            <div><i class="fa fa-check" aria-hidden="true"></i>Currency Exchange</div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 room-title">
-                            <h3>Travel</h3>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-4 col-md-4 col-xl-4 col-12 facilityDiv1">
-                            <div><i class="fa fa-check" aria-hidden="true"></i>Parking</div>
-                            <div><i class="fa fa-check" aria-hidden="true"></i>Travel Desk</div>
-                        </div>
-                        <div class="col-lg-4 col-md-4 col-xl-4 col-12 facilityDiv1">
-                            <div><i class="fa fa-check" aria-hidden="true"></i>Pick & Drop</div>
-                            <div><i class="fa fa-check" aria-hidden="true"></i>Valet Parking</div>
-                        </div>
-                        <div class="col-lg-4 col-md-4 col-xl-4 col-12 facilityDiv1">
-                            <div><i class="fa fa-check" aria-hidden="true"></i>Porter</div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 room-title">
-                            <h3>Recreation</h3>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-4 col-md-4 col-xl-4 col-12 facilityDiv1">
-                            <div><i class="fa fa-check" aria-hidden="true"></i>Fitness Centre</div>
-                            <div><i class="fa fa-check" aria-hidden="true"></i>Massage Centre</div>
-                            <div><i class="fa fa-check" aria-hidden="true"></i>Swimming Pool</div>
-                        </div>
-                        <div class="col-lg-4 col-md-4 col-xl-4 col-12 facilityDiv1">
-                            <div><i class="fa fa-check" aria-hidden="true"></i>Gift Shop</div>
-                            <div><i class="fa fa-check" aria-hidden="true"></i>Pool/Snooker Table</div>
-                        </div>
-                        <div class="col-lg-4 col-md-4 col-xl-4 col-12 facilityDiv1">
-                            <div><i class="fa fa-check" aria-hidden="true"></i>Jacuzzi</div>
-                            <div><i class="fa fa-check" aria-hidden="true"></i>Spa</div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 room-title">
-                            <h3>Kids</h3>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 facilityDiv1">
-                            <div><i class="fa fa-check" aria-hidden="true"></i>Babysitting</div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 room-title">
-                            <h3>Smoking Policy</h3>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-4 col-md-4 col-xl-4 col-12 facilityDiv1">
-                            <div><i class="fa fa-check" aria-hidden="true"></i>Smoking Floors</div>
-                        </div>
-                        <div class="col-lg-8 col-md-8 col-xl-8 col-12 facilityDiv1">
-                            <div><i class="fa fa-check" aria-hidden="true"></i>Smoking Rooms</div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -345,7 +184,7 @@
                             <h4 class="text-center mb-4 pb-2">Comments</h4>
                             <?php if (!empty($motelRoomList) && $motelRoomHandler->getExecutionFeedback() == 1) { ?>
                                 <?php for ($i = 0; $i < sizeof($commentList); $i++) { $item = $commentList[$i] ?>
-                                    <div class="row ">
+                                    <div class="row " style="margin-top: 20pt">
                                         <div class="col">
                                             <div class="d-flex flex-start">
                                                 <img class="rounded-circle shadow-1-strong me-3"
@@ -354,28 +193,28 @@
                                                      height="65"/>
                                                 <div>
                                                     <h6 class="fw-bold text-primary mb-1"
-                                                        style="margin-left: 10pt"><?php echo $item["fullname"] ?></h6>
+                                                        style="margin-left: 10pt; color: black !important;font-weight: bold !important;"><?php echo $item["fullname"] ?></h6>
                                                     <p class="text-muted small mb-0" style="margin-left: 10pt">
                                                         <?php echo $item["created_at"] ?>
                                                     </p>
                                                 </div>
                                             </div>
-                                            <p class="mt-3 mb-4 pb-2">
+                                            <p class="mt-3 mb-4 pb-2" style="margin-bottom: 2pt !important;">
                                                 <?php echo $item["content"] ?>
                                             </p>
-                                            <div class="small d-flex justify-content-start">
+                                            <div class="small d-flex justify-content-start" style="margin-top: 2pt; !important;">
                                                 <a href="#!" class="d-flex align-items-center me-3"
-                                                   style="margin-left: 10pt">
+                                                   style="margin-left: 10pt; color: #6d6d6d;">
                                                     <!--                                                <i class="far fa-thumbs-up me-2"></i>-->
                                                     <p class="mb-0">Like</p>
                                                 </a>
                                                 <a href="#!" class="d-flex align-items-center me-3"
-                                                   style="margin-left: 10pt">
+                                                   style="margin-left: 10pt; color: #6d6d6d;">
                                                     <!--                                                <i class="far fa-comment-dots me-2"></i>-->
                                                     <p class="mb-0">Comment</p>
                                                 </a>
                                                 <a href="#!" class="d-flex align-items-center me-3"
-                                                   style="margin-left: 10pt">
+                                                   style="margin-left: 10pt; color: #6d6d6d;">
                                                     <!--                                                <i class="fas fa-share me-2"></i>-->
                                                     <p class="mb-0">Share</p>
                                                 </a>
