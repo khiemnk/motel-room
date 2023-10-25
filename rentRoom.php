@@ -46,7 +46,7 @@ if (isset($_SESSION["authenticated"])) {
 <div class="container py-5">
     <div class="row">
         <div class="col-md-12">
-            <h2 class="text-center mb-5">Motel Room Platform</h2>
+            <h2 class="text-center mb-5">DigiTall Renting Platform</h2>
             <div class="row">
                 <div class="col-md-6 mx-auto card-holder">
                     <div class="card border-secondary">
@@ -59,24 +59,22 @@ if (isset($_SESSION["authenticated"])) {
                                 <input type="number" id="motelRoomId" hidden
                                        name="motelRoomId" value="<?php echo $updateRoom["id"]; ?>">
                                 <div class="form-group">
-                                    <label for="nameMotelRoom">Name</label>
+                                    <label for="nameMotelRoom">Room Name</label>
                                     <input type="text" class="form-control" id="nameMotelRoom"
                                            placeholder="Enter your name" value="<?php echo $updateRoom["name"]; ?>"
-                                           required>
+                                           readonly>
                                 </div>
                                 <div class="form-group">
                                     <label for="typeRoom">Type</label>
-                                    <select id="typeMotelRoom" class="form-control">
-                                        <option value="Nhà trọ">Nhà Trọ</option>
-                                        <option value="Chung cư">Chung cư</option>
-                                        <option value="Ở ghép">Ở ghép</option>
-                                    </select>
+                                    <input type="text" class="form-control" id="nameMotelRoom"
+                                           value="<?php echo $updateRoom["type"]; ?>"
+                                           readonly>
                                 </div>
                                 <div class="form-group">
                                     <label for="addressMotelRoom">Address</label>
                                     <input type="text" class="form-control" id="addressMotelRoom"
                                            placeholder="Enter address of room"
-                                           value="<?php echo $updateRoom["address"]; ?>" required>
+                                           value="<?php echo $updateRoom["address"]; ?>" readonly>
                                 </div>
                                 <div class="form-group">
                                     <label for="startDate">Rental start date

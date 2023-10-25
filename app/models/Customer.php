@@ -8,6 +8,9 @@ class Customer
     private $password;
     private $phone;
 
+    private $avatar;
+    private $address;
+
     public function __construct()
     {
     }
@@ -61,5 +64,25 @@ class Customer
     public function setPhone($phone)
     {
         $this->phone = $phone;
+    }
+
+    public function getAvatar()
+    {
+        return $this->avatar;
+    }
+
+    public function setAvatar($avatar)
+    {
+        $this->avatar = $avatar;
+    }
+
+    public function getAddress()
+    {
+        return $this->address;
+    }
+
+    public function setAddress($address)
+    {
+        $this->address = $address;
     }
 }

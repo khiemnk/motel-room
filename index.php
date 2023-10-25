@@ -1,4 +1,59 @@
 <?php
+$imagePath = "image/tro1.jpg";
+if (isset($_FILES["fileToUpload"])){
+    $target_dir = "image/";
+    $target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
+    $imagePath = $target_file;
+    $_POST['image_path'] = $imagePath;
+    $uploadOk = 1;
+    $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+
+// Check if image file is a actual image or fake image
+    if(isset($_POST["submit"])) {
+        $check = getimagesize($_FILES["fileToUpload"]["tmp_name"]);
+        if($check !== false) {
+            echo "File is an image - " . $check["mime"] . ".";
+            $uploadOk = 1;
+        } else {
+            echo "File is not an image.";
+            $uploadOk = 0;
+        }
+    }
+
+// Check if file already exists
+    if (file_exists($target_file)) {
+        echo "Sorry, file already exists.";
+        $uploadOk = 0;
+    }
+
+//// Check file size
+//if ($_FILES["fileToUpload"]["size"] > 500000) {
+//    echo "Sorry, your file is too large.";
+//    $uploadOk = 0;
+//}
+
+// Allow certain file formats
+    if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
+        && $imageFileType != "gif" ) {
+        echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+        $uploadOk = 0;
+    }
+
+// Check if $uploadOk is set to 0 by an error
+    if ($uploadOk == 0) {
+        echo "Sorry, your file was not uploaded.";
+// if everything is ok, try to upload file
+    } else {
+        if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
+            echo "The file ". htmlspecialchars( basename( $_FILES["fileToUpload"]["name"])). " has been uploaded.";
+        } else {
+            echo "Sorry, there was an error uploading your file.";
+        }
+    }
+}
+
+?>
+<?php
 ob_start();
 session_start();
 ?>
@@ -108,9 +163,10 @@ session_start();
             $motelRoom->setDesciption($description);
             $motelRoom->setContact($contact);
             $motelRoom->setPrice($price);
-            $motelRoom->setImage("image/tro1.jpg");
+            $motelRoom->setImage($_SESSION['postdata']['image_path']);
             $motelRoom->setRating("10");
             $motelRoom->setType($type);
+
             if ($id != null) {
                 $motelRoomHandler->updateMotelRoom($motelRoom);
             } else {
@@ -124,6 +180,18 @@ session_start();
         $customerHandler = new CustomerHandler();
         $customerList = $customerHandler->getAllCustomer($cHandler->getId());
         if (array_key_exists('postdata', $_SESSION)) {
+
+            if (isset($_SESSION['postdata']['motelRoomId']) && isset($_SESSION['postdata']['startDateRent'])
+                && isset($_SESSION['postdata']['numberMonthRent'])) {
+                $motelRoomId = $_SESSION['postdata']['motelRoomId'];
+                $startDateRent = $_SESSION['postdata']['startDateRent'];
+                $numberMonthRent = $_SESSION['postdata']['numberMonthRent'];
+                $motelRoomRentList = $motelRoomHandler->getMotelRoomById($motelRoomId);
+                $motelRoomHandler->addRentingMotelRoom($cHandler->getId(), $motelRoomRentList[0]["owner_id"], $motelRoomId, $startDateRent, $numberMonthRent);
+
+                $motelRoomRentList = $motelRoomHandler->getAllMotelRoom();
+            }
+
             $priceLess1 = $price1To2 = $price2To3 = $price3To4 = $priceMore4 = $nhaTro = $chungCu = $oGhep = null;
             if (isset($_SESSION['postdata']["priceLess1"])) {
                 $priceLess1 = isset($_SESSION['postdata']["priceLess1"]);
@@ -188,14 +256,6 @@ session_start();
                     }
                     unset($motelRoomList[$k]);
                 }
-            if (isset($_SESSION['postdata']['motelRoomId']) && isset($_SESSION['postdata']['startDateRent'])
-                && isset($_SESSION['postdata']['numberMonthRent'])) {
-                $motelRoomId = $_SESSION['postdata']['motelRoomId'];
-                $startDateRent = $_SESSION['postdata']['startDateRent'];
-                $numberMonthRent = $_SESSION['postdata']['numberMonthRent'];
-                $motelRoomRentList = $motelRoomHandler->getMotelRoomById($motelRoomId);
-                $motelRoomHandler->addRentingMotelRoom($cHandler->getId(), $motelRoomRentList[0]["owner_id"], $motelRoomId, $startDateRent, $numberMonthRent);
-            }
 
             // After using the postdata, don't forget to unset/clear it
             unset($_SESSION['postdata']);
@@ -210,6 +270,8 @@ session_start();
                 }
             }
         }
+
+        $rentedRoomList = $customerHandler->getRentingRoom($cHandler->getId());
         $isSessionExists = true;
         $isAdmin = $_SESSION["authenticated"];
 
@@ -247,21 +309,25 @@ session_start();
                     <?php if ($isSessionExists) { ?>
                         <h4 class="text-white"><?php echo $username; ?></h4>
                         <ul class="list-unstyled">
+                            <li><a href="MyProfile.php?id=<?php echo $cHandler->getId() ?>"
+                                   class="text-white">My profile<i class="fas fa-sign-out-alt ml-2"></i></a></li>
                             <?php if ($isAdmin[1] == "true" && isset($_COOKIE['is_admin']) && $_COOKIE['is_admin'] == "true") { ?>
                                 <li><a href="admin.php" class="text-white">Manage customer reservation(s)<i
                                                 class="far fa-address-book ml-2"></i></a></li>
                             <?php } else { ?>
                                 <li>
-                                    <a href="#" class="text-white" data-toggle="modal" data-target="#myProfileModal">Update
-                                        profile<i class="fas fa-user ml-2"></i></a>
+                                    <a href="#" class="text-white" data-toggle="modal" data-target="#myProfileModal">Update profile<i class="fas fa-user ml-2"></i></a>
                                 </li>
                             <?php } ?>
                             <li><a href="#" id="sign-out-link" class="text-white">Sign out<i
                                             class="fas fa-sign-out-alt ml-2"></i></a></li>
-                            <li><a href="#" data-toggle="modal" data-target=".customer-list" id="sign-out-link"
-                                   class="text-white">Customer Renting List<i class="fas fa-sign-out-alt ml-2"></i></a></li>
-                            <li><a href="index.php?id=<?php echo $cHandler->getId() ?>" id="sign-out-link"
+                            <li><a href="#" data-toggle="modal" data-target=".customer-list"
+                                   class="text-white">Customer Renting List<i class="fas fa-sign-out-alt ml-2"></i></a>
+                            </li>
+                            <li><a href="index.php?id=<?php echo $cHandler->getId() ?>"
                                    class="text-white">My Room List<i class="fas fa-sign-out-alt ml-2"></i></a></li>
+                            <li><a href="#" data-toggle="modal" data-target=".rented-room-list" id="sign-out-link"
+                                   class="text-white">Rented Room List<i class="fas fa-sign-out-alt ml-2"></i></a></li>
                         </ul>
                     <?php } else { ?>
                         <h4>
@@ -278,7 +344,7 @@ session_start();
         <div class="container d-flex justify-content-between">
             <a href="index.php" class="navbar-brand d-flex align-items-center">
                 <i class="fas fa-h-square mr-2"></i>
-                <strong>Motel Room Platform</strong>
+                <strong>DigiTall Renting Platform</strong>
             </a>
             <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarHeader"
                     aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
@@ -374,8 +440,9 @@ session_start();
                                         </div>
                                         <?php if ($isSessionExists) { ?>
                                             <div class="col-lg-3 col-md-3 col-12">
-                                                <button type="button" class="btn btn-primary" data-toggle="modal"
-                                                        data-target="#createMotelRoom">Post Motel Room
+                                                <button type="button" class="btn btn-primary"><a href="createRoom.php"
+                                                                                                 style="color: white !important;">Post
+                                                        Motel Room</a>
                                                 </button>
                                             </div>
                                         <?php } ?>
@@ -425,7 +492,7 @@ session_start();
                                                     <h6><?php echo $item["price"] ?> triệu/tháng</h6>
                                                     <span><?php echo $item["address"] ?></span><br>
                                                     <?php if (isset($_GET["id"]) && $_GET["id"] == $cHandler->getId()) { ?>
-                                                    <span>Room Id: <?php echo $item["id"] ?></span>
+                                                        <span>Room Id: <?php echo $item["id"] ?></span>
                                                     <?php } ?>
                                                 </div>
                                                 <div class="col-md-12 col-lg-4 col-xl-4 col-sm-12 ratingDiv">
@@ -680,9 +747,9 @@ session_start();
                     <?php
                     $i = 0;
                     if ($customerList != null)
-                    foreach ($customerList as $item) {
-                        $i++;
-                        echo '
+                        foreach ($customerList as $item) {
+                            $i++;
+                            echo '
                         <tr>
                           <td>' . $i . '</td>
                           <td>' . $item["fullname"] . '</td>
@@ -694,7 +761,52 @@ session_start();
                           <td>' . $item["created_at"] . '</td>
                         </tr>
                         ';
-                    } ?>
+                        } ?>
+                </table>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade rented-room-list" tabindex="-1" role="dialog" aria-labelledby="bookNowModalLarge"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Customer Renting List</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <table>
+                    <tr>
+                        <th>STT</th>
+                        <th>Name</th>
+                        <th>Phone</th>
+                        <th>Email</th>
+                        <th>Room Id</th>
+                        <th>Rental Start Date</th>
+                        <th>Estimate Month Rental</th>
+                        <th>Created At</th>
+                    </tr>
+                    <?php
+                    $i = 0;
+                    if ($rentedRoomList != null)
+                        foreach ($rentedRoomList as $item) {
+                            $i++;
+                            echo '
+                        <tr>
+                          <td>' . $i . '</td>
+                          <td>' . $item["fullname"] . '</td>
+                          <td>' . $item["phone"] . '</td>
+                          <td>' . $item["email"] . '</td>
+                          <td>' . $item["motel_room_id"] . '</td>
+                          <td>' . $item["rental_start_date"] . '</td>
+                          <td>' . $item["total_month_rental"] . '</td>
+                          <td>' . $item["created_at"] . '</td>
+                        </tr>
+                        ';
+                        } ?>
                 </table>
 
             </div>
@@ -771,7 +883,7 @@ session_start();
                     <div class="card border-0">
                         <div class="card-body p-0">
                             <form action="index.php" class="form" role="form" autocomplete="off" id="create-motel-room"
-                                  method="post" onsubmit="">
+                                  method="post" onsubmit="" enctype="multipart/form-data">
                                 <input type="number" id="createMotelRoom" hidden
                                        name="motelRoomId">
                                 <div class="form-group">
@@ -814,13 +926,10 @@ session_start();
                                     <input type="number" class="form-control" id="createMotelRoom"
                                            name="contactMotelRoom" placeholder="Enter contact for room" required>
                                 </div>
-                                <!--                                <form action="upload.php" method="post" enctype="multipart/form-data">-->
-                                <!--                                    <label for="contactMotelRoom">Select image to upload:</label>-->
-                                <!--                                    <div>-->
-                                <!--                                        <input type="file" name="fileToUpload" id="fileToUpload">-->
-                                <!--                                    </div>-->
-                                <!--                                    <input type="submit" value="Upload Image" name="submit">-->
-                                <!--                                </form>-->
+                                <label for="contactMotelRoom">Select image to upload:</label>
+                                <div>
+                                    <input type="file" name="fileToUpload" id="fileToUpload">
+                                </div>
                                 <div class="form-group">
                                     <input type="submit" class="btn btn-primary btn-md float-right"
                                            name="createMotelRoomBtn" value="Create">
