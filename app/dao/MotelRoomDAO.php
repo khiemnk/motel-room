@@ -78,6 +78,7 @@ class MotelRoomDAO
     protected function getCommentOfRoom(int $id){
         $sql = "SELECT
         c2.fullname,
+        c2.avatar,
         c.content,
         c.created_at
         FROM motel_room AS r join comment c on r.id = c.motel_room_id

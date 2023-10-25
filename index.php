@@ -309,21 +309,22 @@ session_start();
                     <?php if ($isSessionExists) { ?>
                         <h4 class="text-white"><?php echo $username; ?></h4>
                         <ul class="list-unstyled">
+                            <li><a href="MyProfile.php?id=<?php echo $cHandler->getId() ?>"
+                                   class="text-white">My profile<i class="fas fa-sign-out-alt ml-2"></i></a></li>
                             <?php if ($isAdmin[1] == "true" && isset($_COOKIE['is_admin']) && $_COOKIE['is_admin'] == "true") { ?>
                                 <li><a href="admin.php" class="text-white">Manage customer reservation(s)<i
                                                 class="far fa-address-book ml-2"></i></a></li>
                             <?php } else { ?>
                                 <li>
-                                    <a href="#" class="text-white" data-toggle="modal" data-target="#myProfileModal">Update
-                                        profile<i class="fas fa-user ml-2"></i></a>
+                                    <a href="#" class="text-white" data-toggle="modal" data-target="#myProfileModal">Update profile<i class="fas fa-user ml-2"></i></a>
                                 </li>
                             <?php } ?>
                             <li><a href="#" id="sign-out-link" class="text-white">Sign out<i
                                             class="fas fa-sign-out-alt ml-2"></i></a></li>
-                            <li><a href="#" data-toggle="modal" data-target=".customer-list" id="sign-out-link"
+                            <li><a href="#" data-toggle="modal" data-target=".customer-list"
                                    class="text-white">Customer Renting List<i class="fas fa-sign-out-alt ml-2"></i></a>
                             </li>
-                            <li><a href="index.php?id=<?php echo $cHandler->getId() ?>" id="sign-out-link"
+                            <li><a href="index.php?id=<?php echo $cHandler->getId() ?>"
                                    class="text-white">My Room List<i class="fas fa-sign-out-alt ml-2"></i></a></li>
                             <li><a href="#" data-toggle="modal" data-target=".rented-room-list" id="sign-out-link"
                                    class="text-white">Rented Room List<i class="fas fa-sign-out-alt ml-2"></i></a></li>

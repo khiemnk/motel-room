@@ -188,8 +188,8 @@
                                         <div class="col">
                                             <div class="d-flex flex-start">
                                                 <img class="rounded-circle shadow-1-strong me-3"
-                                                     style="width: 6%; height: 6%"
-                                                     src="image/image-cmt.jpg" alt="avatar" width="65"
+                                                     style="width: 40px; height: 40px"
+                                                     src="<?php echo $item["avatar"]?>" alt="avatar" width="65"
                                                      height="65"/>
                                                 <div>
                                                     <h6 class="fw-bold text-primary mb-1"
@@ -199,7 +199,7 @@
                                                     </p>
                                                 </div>
                                             </div>
-                                            <p class="mt-3 mb-4 pb-2" style="margin-bottom: 2pt !important;">
+                                            <p class="mt-3 mb-4 pb-2" style="margin-bottom: 2pt!important;margin-left: 10pt">
                                                 <?php echo $item["content"] ?>
                                             </p>
                                             <div class="small d-flex justify-content-start" style="margin-top: 2pt; !important;">

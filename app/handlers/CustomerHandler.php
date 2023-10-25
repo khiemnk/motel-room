@@ -69,6 +69,8 @@ class CustomerHandler extends CustomerDAO
             $c->setPassword($v->getPassword());
             $c->setPhone($v->getPhone());
             $c->setFullName($v->getFullName());
+            $c->setAvatar($v->getAvatar());
+            $c->setAddress($v->getAddress());
         }
         return $c;
     }
@@ -118,6 +120,13 @@ class CustomerHandler extends CustomerDAO
                 $this->setExecutionFeedback("This email is not registered.");
             }
         }
+    }
+
+    public function updateProfile(Customer  $customer){
+        if ($this->updateToDB($customer)) {
+            return $this->setExecutionFeedback(1);
+        }
+        return $this->setExecutionFeedback(0);
     }
 
     public function deleteCustomer(Customer $customer)

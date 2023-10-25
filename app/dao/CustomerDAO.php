@@ -126,4 +126,27 @@ class CustomerDAO
         $stmt->execute([$email]);
         return  (int) $stmt->fetchColumn();
     }
+
+    protected function updateToDB(Customer $customer) : bool
+    {
+        $sql = 'UPDATE `customer` c SET c.fullname = ?,
+        c.address = ?,
+        c.phone = ?,
+        c.email = ?,
+        c.avatar = ?
+        where c.cid = ?';
+        $stmt = DB::getInstance()->prepare($sql);
+        $exec = $stmt->execute(
+            array(
+                $customer->getFullName(),
+                $customer->getAddress(),
+                $customer->getPhone(),
+                $customer->getEmail(),
+                $customer->getAvatar(),
+                $customer->getId()
+            )
+        );
+        $stmt->debugDumpParams();
+        return $exec;
+    }
 }
