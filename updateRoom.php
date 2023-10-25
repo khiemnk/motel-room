@@ -89,7 +89,7 @@ if (isset($_SESSION["authenticated"]))
                                 </div>
                                 <div class="form-group">
                                     <label for="priceMotelRoom">Price</label>
-                                    <input type="number" class="form-control" placeholder="Enter price of room" id="priceMotelRoom"
+                                    <input type="number"  step="0.1" class="form-control" placeholder="Enter price of room" id="priceMotelRoom"
                                            name="priceMotelRoom" value="<?php echo $updateRoom["price"];?>" required>
                                 </div>
                                 <div class="form-group">

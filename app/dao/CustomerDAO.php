@@ -31,14 +31,16 @@ class CustomerDAO
         c.phone,
         c.email,
         r.name,
+        m.id,
         m.motel_room_id,
         m.rental_start_date,
         m.total_month_rental,
-        m.created_at
+        m.created_at,
+        m.status
         FROM `customer` c 
-        join `renting` m on c.cid = m.owner_id 
+        join `renting` m on c.cid = m.customer_id 
         join `motel_room` r on m.motel_room_id = r.id
-        where c.cid = $cusId
+        where m.owner_id = $cusId
         order by m.created_at desc;";
         $stmt = DB::getInstance()->prepare($sql);
         $stmt->execute();
@@ -57,7 +59,8 @@ class CustomerDAO
         m.motel_room_id,
         m.rental_start_date,
         m.total_month_rental,
-        m.created_at
+        m.created_at,
+        m.status
         FROM `customer` c 
         join `renting` m on c.cid = m.customer_id 
         join `motel_room` r on m.motel_room_id = r.id
@@ -146,7 +149,7 @@ class CustomerDAO
                 $customer->getId()
             )
         );
-        $stmt->debugDumpParams();
+//        $stmt->debugDumpParams();
         return $exec;
     }
 }

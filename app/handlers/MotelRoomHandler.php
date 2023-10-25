@@ -84,4 +84,20 @@ class MotelRoomHandler extends MotelRoomDAO
         }
         return $this->setExecutionFeedback(0);
     }
+
+    public function approveRenting(int $id)
+    {
+        if ($this->approve($id)) {
+            return $this->setExecutionFeedback(1);
+        }
+        return $this->setExecutionFeedback(0);
+    }
+
+    public function cancelRenting(int $id)
+    {
+        if ($this->cancel($id)) {
+            return $this->setExecutionFeedback(1);
+        }
+        return $this->setExecutionFeedback(0);
+    }
 }

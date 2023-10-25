@@ -189,7 +189,7 @@ session_start();
                 $motelRoomRentList = $motelRoomHandler->getMotelRoomById($motelRoomId);
                 $motelRoomHandler->addRentingMotelRoom($cHandler->getId(), $motelRoomRentList[0]["owner_id"], $motelRoomId, $startDateRent, $numberMonthRent);
 
-                $motelRoomRentList = $motelRoomHandler->getAllMotelRoom();
+                $motelRoomList = $motelRoomHandler->getAllMotelRoom();
             }
 
             $priceLess1 = $price1To2 = $price2To3 = $price3To4 = $priceMore4 = $nhaTro = $chungCu = $oGhep = null;
@@ -321,7 +321,7 @@ session_start();
                             <?php } ?>
                             <li><a href="#" id="sign-out-link" class="text-white">Sign out<i
                                             class="fas fa-sign-out-alt ml-2"></i></a></li>
-                            <li><a href="#" data-toggle="modal" data-target=".customer-list"
+                            <li><a href="ApproveRoom.php"
                                    class="text-white">Customer Renting List<i class="fas fa-sign-out-alt ml-2"></i></a>
                             </li>
                             <li><a href="index.php?id=<?php echo $cHandler->getId() ?>"
@@ -447,7 +447,7 @@ session_start();
                                             </div>
                                         <?php } ?>
                                     </div>
-                                    <?php if (!empty($motelRoomList) && $motelRoomHandler->getExecutionFeedback() == 1) {
+                                    <?php if (!empty($motelRoomList) && is_array($motelRoomList) && $motelRoomList != '' && $motelRoomHandler->getExecutionFeedback() == 1) {
                                         $dem = 0; ?>
                                         <?php foreach ($motelRoomList as $k => $item) {
                                             if ($dem == 20) break;
@@ -743,6 +743,7 @@ session_start();
                         <th>Rental Start Date</th>
                         <th>Estimate Month Rental</th>
                         <th>Created At</th>
+                        <th>Status</th>
                     </tr>
                     <?php
                     $i = 0;
@@ -751,14 +752,17 @@ session_start();
                             $i++;
                             echo '
                         <tr>
+                        <form>
                           <td>' . $i . '</td>
                           <td>' . $item["fullname"] . '</td>
                           <td>' . $item["phone"] . '</td>
                           <td>' . $item["email"] . '</td>
-                          <td>' . $item["motel_room_id"] . '</td>
+                          <td><input hidden value="' . $item["motel_room_id"] . '">' . $item["motel_room_id"] . '</td>
                           <td>' . $item["rental_start_date"] . '</td>
                           <td>' . $item["total_month_rental"] . '</td>
                           <td>' . $item["created_at"] . '</td>
+                          <td>' . $item["status"] . '</td>
+                          </form>
                         </tr>
                         ';
                         } ?>
@@ -773,7 +777,7 @@ session_start();
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Customer Renting List</h5>
+                    <h5 class="modal-title">Rented Room List</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -788,6 +792,7 @@ session_start();
                         <th>Rental Start Date</th>
                         <th>Estimate Month Rental</th>
                         <th>Created At</th>
+                        <th>Status</th>
                     </tr>
                     <?php
                     $i = 0;
@@ -804,6 +809,7 @@ session_start();
                           <td>' . $item["rental_start_date"] . '</td>
                           <td>' . $item["total_month_rental"] . '</td>
                           <td>' . $item["created_at"] . '</td>
+                          <td>' . $item["status"] . '</td>
                         </tr>
                         ';
                         } ?>

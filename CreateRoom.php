@@ -36,7 +36,7 @@ if (isset($_SESSION["authenticated"]))
     require 'app/handlers/MotelRoomHandler.php';
     // get update motel room
     ?>
-    <title>Update Room </title>
+    <title>Create Room </title>
 </head>
 <body class="bg-secondary">
 
@@ -85,7 +85,7 @@ if (isset($_SESSION["authenticated"]))
                                 </div>
                                 <div class="form-group">
                                     <label for="priceMotelRoom">Price</label>
-                                    <input type="number" class="form-control" placeholder="Enter price of room"
+                                    <input type="number" class="form-control" step="0.1" placeholder="Enter price of room"
                                            id="createMotelRoom"
                                            name="priceMotelRoom" required>
                                 </div>

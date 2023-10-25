@@ -141,7 +141,7 @@ class MotelRoomDAO
                 $idRoom,
                 $startDateRent,
                 $numberMonthRent,
-                "pending"
+                "Pending"
             )
         );
         $sql = 'UPDATE `motel_room` r SET r.is_available = ?
@@ -184,6 +184,39 @@ class MotelRoomDAO
                 $motelRoom->getId()
             )
         );
+//        $stmt->debugDumpParams();
+        return $exec;
+    }
+
+    protected function approve($id) : bool
+    {
+        $sql = 'UPDATE `renting` r SET r.status = ?
+        where r.id = ?';
+        $stmt = DB::getInstance()->prepare($sql);
+        $exec = $stmt->execute(
+            array(
+                "Success",
+                $id
+            )
+        );
+//        $stmt->debugDumpParams();
+        return $exec;
+    }
+
+    protected function cancel($id) : bool
+    {
+        $sql = 'UPDATE `renting` r join `motel_room` m on r.motel_room_id = m.id 
+        SET r.status = ?, m.is_available = ?
+        where r.id = ?';
+        $stmt = DB::getInstance()->prepare($sql);
+        $exec = $stmt->execute(
+            array(
+                "Cancel",
+                "1",
+                $id
+            )
+        );
+
 //        $stmt->debugDumpParams();
         return $exec;
     }
